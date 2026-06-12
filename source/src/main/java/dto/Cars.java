@@ -14,6 +14,9 @@ public class Cars implements Serializable {
 		this.carstatus = carstatus;
 		this.carimage = carimage;
 	}
+	public Cars() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
 	public int getCarid() {
 		return carid;
 	}
