@@ -13,6 +13,29 @@ public class Reserve implements Serializable {
 	private String purpose;
 	private String username;
 
+	public Reserve(int carid) {
+		super();
+		this.carid = carid;
+	}
+	
+	public Reserve(String userid, LocalDateTime sdate, LocalDateTime fdate, int carid, String purpose) {
+		super();
+		this.userid = userid;
+		this.sdate = sdate;
+		this.fdate = fdate;
+		this.carid = carid;
+		this.purpose = purpose;
+	}
+
+	public Reserve(int reservenumber, LocalDateTime sdate, LocalDateTime fdate,
+			String purpose, String username) {
+		super();
+		this.reservenumber = reservenumber;
+		this.sdate = sdate;
+		this.fdate = fdate;
+		this.purpose = purpose;
+		this.username = username;
+	}
 	public Reserve(int reservenumber, String userid, LocalDateTime sdate, LocalDateTime fdate, int carid,
 			LocalDateTime reservecreated, String purpose, String username) {
 

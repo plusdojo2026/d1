@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,58 +9,184 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import dao.IdPwDAO;
-import dto.IdPw;
-import dto.LoginUser;
-import dto.Result;
+import dao.GasolineDAO;
+import dto.CompareHistory;
 
-/**
- * Servlet implementation class LoginServlet
- */
-@WebServlet("/LoginServlet")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/GasolineServlet")
+public class GasolineServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	// 初期表示
+	@Override
+	protected void doGet(
+			HttpServletRequest request,
+			HttpServletResponse response)
 			throws ServletException, IOException {
-		// ログインページにフォワードする
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
-		dispatcher.forward(request, response);
+
+		GasolineDAO dao = new GasolineDAO();
+
+		List<CompareHistory> historyList =
+				dao.selectHistory();
+
+		CompareHistory minHistory =
+				dao.getMinHistory();
+
+		request.setAttribute(
+				"historyList",
+				historyList);
+
+		request.setAttribute(
+				"minHistory",
+				minHistory);
+
+		RequestDispatcher dispatcher =
+				request.getRequestDispatcher(
+						"/WEB-INF/jsp/gasoline.jsp");
+
+		dispatcher.forward(
+				request,
+				response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	// 比較処理
+	@Override
+	protected void doPost(
+			HttpServletRequest request,
+			HttpServletResponse response)
 			throws ServletException, IOException {
-		// リクエストパラメータを取得する
+
 		request.setCharacterEncoding("UTF-8");
-		String id = request.getParameter("id");
-		String pw = request.getParameter("pw");
 
-		// ログイン処理を行う
-		IdPwDAO iDao = new IdPwDAO();
-		if (iDao.isLoginOK(new IdPw(id, pw))) { // ログイン成功
-			// セッションスコープにIDを格納する
-			HttpSession session = request.getSession();
-			session.setAttribute("id", new LoginUser(id));
+		String stationname =
+				request.getParameter("stationname");
 
-			// メニューサーブレットにリダイレクトする
-			response.sendRedirect("/webapp/MenuServlet");
-		} else { // ログイン失敗
-			// リクエストスコープに、タイトル、メッセージ、戻り先を格納する
-			request.setAttribute("result", new Result("ログイン失敗！", "IDまたはPWに間違いがあります。", "/webapp/LoginServlet"));
+		String priceStr =
+				request.getParameter("gasolineprice");
 
-			// 結果ページにフォワードする
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result.jsp");
-			dispatcher.forward(request, response);
+		// スタンド名チェック
+		if (stationname == null ||
+			stationname.trim().isEmpty()) {
+
+			request.setAttribute(
+					"error",
+					"スタンド名を入力してください");
+
+			doGet(request, response);
+			return;
 		}
+
+		// 価格未入力チェック
+		if (priceStr == null ||
+			priceStr.trim().isEmpty()) {
+
+			request.setAttribute(
+					"error",
+					"価格を入力してください");
+
+			doGet(request, response);
+			return;
+		}
+
+		int inputprice;
+
+		try {
+
+			inputprice =
+				Integer.parseInt(priceStr);
+
+		} catch (NumberFormatException e) {
+
+			request.setAttribute(
+					"error",
+					"価格は数値で入力してください");
+
+			doGet(request, response);
+			return;
+		}
+
+		// 仮の平均価格
+		int averageprice = 168;
+
+		String resultMessage;
+		int diff;
+
+		if (inputprice < averageprice) {
+
+			diff = averageprice - inputprice;
+
+			resultMessage =
+					"+" + diff + "円安い";
+
+		} else if (inputprice > averageprice) {
+
+			diff = inputprice - averageprice;
+
+			resultMessage =
+					"-" + diff + "円高い";
+
+		} else {
+
+			diff = 0;
+
+			resultMessage =
+					"同じ価格です";
+		}
+
+		GasolineDAO dao =
+				new GasolineDAO();
+
+		// DB登録
+		dao.insertCompare(
+				stationname,
+				inputprice,
+				averageprice,
+				resultMessage);
+
+		// 最新履歴取得
+		List<CompareHistory> historyList =
+				dao.selectHistory();
+
+		// 最安値取得
+		CompareHistory minHistory =
+				dao.getMinHistory();
+
+		request.setAttribute(
+				"stationname",
+				stationname);
+
+		request.setAttribute(
+				"minPrice",
+				minHistory != null
+						? minHistory.getInputprice()
+						: 0);
+
+		request.setAttribute(
+				"avgPrice",
+				averageprice);
+
+		request.setAttribute(
+				"diff",
+				diff);
+
+		request.setAttribute(
+				"resultMessage",
+				resultMessage);
+
+		request.setAttribute(
+				"historyList",
+				historyList);
+
+		request.setAttribute(
+				"minHistory",
+				minHistory);
+
+		RequestDispatcher dispatcher =
+				request.getRequestDispatcher(
+						"/WEB-INF/jsp/gasoline.jsp");
+
+		dispatcher.forward(
+				request,
+				response);
 	}
 }
