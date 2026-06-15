@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import dto.CompareHistory;
+import dto.Gasoline;
 
 public class GasolineDAO {
 
@@ -17,45 +17,57 @@ public class GasolineDAO {
     private final String USER = "root";
     private final String PASS = "password";
 
-    // 比較履歴登録
-    public boolean insertCompare(
-            String stationname,
-            int inputprice,
-            int averageprice,
-            String resultmessage) {
+    // 登録
+    public boolean insert(Gasoline gasoline) {
 
         try(Connection conn =
                 DriverManager.getConnection(
                         URL, USER, PASS)) {
 
             String sql =
-                "INSERT INTO GasolineCompare "
-              + "(stationname,inputprice,"
-              + "averageprice,resultmessage,"
-              + "createddate)"
-              + " VALUES(?,?,?,?,NOW())";
+                "INSERT INTO gasoline "
+              + "(userid, stationname, gasolineprice, createddate) "
+              + "VALUES (?, ?, ?, ?)";
 
             PreparedStatement pStmt =
                     conn.prepareStatement(sql);
 
-            pStmt.setString(1, stationname);
-            pStmt.setInt(2, inputprice);
-            pStmt.setInt(3, averageprice);
-            pStmt.setString(4, resultmessage);
+            // idpwテーブルに存在するuseridを指定
+            pStmt.setString(1, "admin");
 
-            return pStmt.executeUpdate() == 1;
+            pStmt.setString(
+                    2,
+                    gasoline.getStationname());
+
+            pStmt.setInt(
+                    3,
+                    gasoline.getGasolineprice());
+
+            pStmt.setTimestamp(
+                    4,
+                    java.sql.Timestamp.valueOf(
+                            gasoline.getCreateddate()));
+
+            int result =
+                    pStmt.executeUpdate();
+
+            System.out.println(
+                    "登録件数=" + result);
+
+            return result == 1;
 
         } catch(Exception e) {
+
             e.printStackTrace();
         }
 
         return false;
     }
 
-    // 履歴取得
-    public List<CompareHistory> selectHistory() {
+    // 一覧取得
+    public List<Gasoline> selectAll() {
 
-        List<CompareHistory> list =
+        List<Gasoline> list =
                 new ArrayList<>();
 
         try(Connection conn =
@@ -63,8 +75,7 @@ public class GasolineDAO {
                         URL, USER, PASS)) {
 
             String sql =
-                "SELECT * "
-              + "FROM GasolineCompare "
+                "SELECT * FROM gasoline "
               + "ORDER BY createddate DESC";
 
             PreparedStatement pStmt =
@@ -76,12 +87,11 @@ public class GasolineDAO {
             while(rs.next()) {
 
                 list.add(
-                    new CompareHistory(
-                        rs.getInt("compareid"),
+                    new Gasoline(
+                        rs.getInt("gasolineid"),
+                        0,
                         rs.getString("stationname"),
-                        rs.getInt("inputprice"),
-                        rs.getInt("averageprice"),
-                        rs.getString("resultmessage"),
+                        rs.getInt("gasolineprice"),
                         rs.getTimestamp("createddate")
                           .toLocalDateTime()
                     )
@@ -89,6 +99,7 @@ public class GasolineDAO {
             }
 
         } catch(Exception e) {
+
             e.printStackTrace();
         }
 
@@ -96,18 +107,17 @@ public class GasolineDAO {
     }
 
     // 最安値取得
-    public CompareHistory getMinHistory() {
+    public Gasoline getMinPrice() {
 
-        CompareHistory history = null;
+        Gasoline gasoline = null;
 
         try(Connection conn =
                 DriverManager.getConnection(
                         URL, USER, PASS)) {
 
             String sql =
-                "SELECT * "
-              + "FROM GasolineCompare "
-              + "ORDER BY inputprice ASC "
+                "SELECT * FROM gasoline "
+              + "ORDER BY gasolineprice ASC "
               + "LIMIT 1";
 
             PreparedStatement pStmt =
@@ -118,22 +128,22 @@ public class GasolineDAO {
 
             if(rs.next()) {
 
-                history =
-                    new CompareHistory(
-                        rs.getInt("compareid"),
+                gasoline =
+                    new Gasoline(
+                        rs.getInt("gasolineid"),
+                        0,
                         rs.getString("stationname"),
-                        rs.getInt("inputprice"),
-                        rs.getInt("averageprice"),
-                        rs.getString("resultmessage"),
+                        rs.getInt("gasolineprice"),
                         rs.getTimestamp("createddate")
                           .toLocalDateTime()
                     );
             }
 
         } catch(Exception e) {
+
             e.printStackTrace();
         }
 
-        return history;
+        return gasoline;
     }
 }

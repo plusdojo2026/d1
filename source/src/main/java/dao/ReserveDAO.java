@@ -1,11 +1,11 @@
-	package dao;
+package dao;
 
-	import java.sql.Connection;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,57 +19,57 @@ import dto.Reserve;
 		private final String USER = "root";
 		private final String PASS = "password";
 		
-		public List<Reserve> Select(int carid) {
-			Connection conn = getConnection();
-			ResultSet rs = null;
-			PreparedStatement pStmt = null;
-			List<Reserve> cardList = new ArrayList<>();
-			
-			try {
-				// SQL文を準備する
-//				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
-				
-				String sql = "SELECT Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
-				        + "FROM Reserve INNER JOIN Idpw ON Reserve.userid = Idpw.userid "
-				        + "WHERE carid LIKE ? "
-				        + "AND fdate >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')\r\n "
-				        + "AND fdate <  DATE_FORMAT(CURRENT_DATE + INTERVAL 2 MONTH, '%Y-%m-01') " 
-				        + "ORDER BY Reserve.reservecreated desc";
-				pStmt = conn.prepareStatement(sql);
-
-				// SQL文を完成させる
-				pStmt.setInt(1, carid);
-
-				// SQL文を実行し、結果表を取得する
-				rs = pStmt.executeQuery();
-
-				// 結果表をコレクションにコピーする
-				while (rs.next()) {
-
-				    java.sql.Timestamp sqlsDate = rs.getTimestamp("sdate");
-				    java.sql.Timestamp sqlfDate = rs.getTimestamp("fdate");
-
-				    LocalDateTime sdate = (sqlsDate != null) ? sqlsDate.toLocalDateTime() : null;
-				    LocalDateTime fdate = (sqlfDate != null) ? sqlfDate.toLocalDateTime() : null;
-
-					 Reserve bc = new Reserve(
-							rs.getInt("reservenumber"),
-							sdate,
-							fdate,
-						    rs.getString("purpose"),
-					        rs.getString("username")
-					    );
-					cardList.add(bc);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				cardList = null;
-			} finally {
-				closeAll(conn,rs,pStmt);
-			}
-			// 結果を返す
-			return cardList;	
-		}
+//		public List<Reserve> Select(int carid) {
+//			Connection conn = getConnection();
+//			ResultSet rs = null;
+//			PreparedStatement pStmt = null;
+//			List<Reserve> cardList = new ArrayList<>();
+//			
+//			try {
+//				// SQL文を準備する
+////				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
+//				
+//				String sql = "SELECT Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
+//				        + "FROM Reserve INNER JOIN Idpw ON Reserve.userid = Idpw.userid "
+//				        + "WHERE carid LIKE ? "
+//				        + "AND fdate >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')\r\n "
+//				        + "AND fdate <  DATE_FORMAT(CURRENT_DATE + INTERVAL 2 MONTH, '%Y-%m-01') " 
+//				        + "ORDER BY Reserve.reservecreated desc";
+//				pStmt = conn.prepareStatement(sql);
+//
+//				// SQL文を完成させる
+//				pStmt.setInt(1, carid);
+//
+//				// SQL文を実行し、結果表を取得する
+//				rs = pStmt.executeQuery();
+//
+//				// 結果表をコレクションにコピーする
+//				while (rs.next()) {
+//
+//				    java.sql.Timestamp sqlsDate = rs.getTimestamp("sdate");
+//				    java.sql.Timestamp sqlfDate = rs.getTimestamp("fdate");
+//
+//				    LocalDateTime sdate = (sqlsDate != null) ? sqlsDate.toLocalDateTime() : null;
+//				    LocalDateTime fdate = (sqlfDate != null) ? sqlfDate.toLocalDateTime() : null;
+//
+//					 Reserve bc = new Reserve(
+//							rs.getInt("reservenumber"),
+//							sdate,
+//							fdate,
+//						    rs.getString("purpose"),
+//					        rs.getString("username")
+//					    );
+//					cardList.add(bc);
+//				}
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//				cardList = null;
+//			} finally {
+//				closeAll(conn,rs,pStmt);
+//			}
+//			// 結果を返す
+//			return cardList;	
+//		}
 		
 		public List<Reserve> Select(String carname) {
 			Connection conn = getConnection();
@@ -83,8 +83,9 @@ import dto.Reserve;
 				
 				String sql = "SELECT Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
 				        + "FROM Reserve INNER JOIN Idpw ON Reserve.userid = Idpw.userid "
+				        + "LEFT JOIN Cars ON Reserve.carid = Cars.carid "
 				        + "WHERE carname LIKE ? "
-				        + "AND fdate >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')\r\n "
+				        + "AND fdate >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01') "
 				        + "AND fdate <  DATE_FORMAT(CURRENT_DATE + INTERVAL 2 MONTH, '%Y-%m-01') " 
 				        + "ORDER BY Reserve.reservecreated desc";
 				pStmt = conn.prepareStatement(sql);
@@ -124,7 +125,40 @@ import dto.Reserve;
 		}
 		
 		
-		public boolean delete(Reserve card) {
+		public boolean update(Reserve card) {
+			Connection conn = getConnection();
+			ResultSet rs = null;
+			PreparedStatement pStmt = null;
+			boolean result = false;
+			
+			try {
+				// SQL文を準備する
+//				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
+				
+				String sql = "UPDATE Reserve SET sdate=?, fdate=?, purpose=? "
+						+ "WHERE reservenumber =? ";
+				pStmt = conn.prepareStatement(sql);
+
+				// SQL文を完成させる
+		        pStmt.setTimestamp(1, Timestamp.valueOf(card.getSdate()));
+		        pStmt.setTimestamp(2, Timestamp.valueOf(card.getFdate()));
+		        pStmt.setString(3,card.getPurpose());
+		        pStmt.setInt(4, card.getReservenumber());
+
+				// SQL文を実行し、結果表を取得する
+				if (pStmt.executeUpdate() == 1) {
+					result = true;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				closeAll(conn,rs,pStmt);
+			}
+			// 結果を返す
+			return result;	
+		}
+		
+		public boolean delete(int reservenumber) {
 			Connection conn = getConnection();
 			ResultSet rs = null;
 			PreparedStatement pStmt = null;
@@ -132,15 +166,17 @@ import dto.Reserve;
 
 			try {
 				// SQL文を準備する
-				String sql = "DELETE FROM Reserve WHERE reservenumber?";
+				String sql = "DELETE FROM Reserve WHERE reservenumber =?";
 				pStmt = conn.prepareStatement(sql);
 
 				// SQL文を完成させる
-				pStmt.setInt(1, card.getReservenumber());
+				pStmt.setInt(1, reservenumber);
 
 				// SQL文を実行する
-				pStmt.executeUpdate();
-				pStmt.close();
+				 int rows = pStmt.executeUpdate();
+			        System.out.println("削除件数 rows = " + rows);
+
+			        return rows > 0;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
@@ -151,17 +187,18 @@ import dto.Reserve;
 			return result;
 		}
 		
-		public int insert(Reserve card) {
+		
+		public boolean insert(Reserve card) {
 			Connection conn = getConnection();
 			ResultSet rs = null;
 			PreparedStatement pStmt = null;
-			int reservenumber = -1;
+			boolean result = false;
 
 			try {
 				// SQL文を準備する
 				String sql = "INSERT INTO Reserve (userid,sdate,fdate,carid,purpose) "
 						+ "VALUES (?, ?, ?, ?, ?)";
-				pStmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			    pStmt = conn.prepareStatement(sql);
 
 
 				// SQL文を完成させる
@@ -193,13 +230,9 @@ import dto.Reserve;
 
 
 				// SQL文を実行する
-				int rows = pStmt.executeUpdate();
-			        if (rows == 1) {
-			            rs = pStmt.getGeneratedKeys();
-			            if (rs.next()) {
-			                reservenumber = rs.getInt(1);  // ← これが AUTO_INCREMENT の reservenumber
-			            }
-			        }
+				if (pStmt.executeUpdate() == 1) {
+					result = true;
+				}
 
 		    } catch (SQLException e) {
 		        e.printStackTrace();
@@ -207,8 +240,42 @@ import dto.Reserve;
 		        closeAll(conn, rs, pStmt);
 		    }
 
-		    return reservenumber;
+		    return result;
 		}
+		
+		public List<Reserve> selectAll() {
+				Connection conn = getConnection();
+				ResultSet rs = null;
+				PreparedStatement pStmt = null;
+				List<Reserve> reserveList = new ArrayList<>();
+
+				try {
+					String sql =
+							"SELECT Reserve.sdate, Reserve.fdate, Cars.carname " +
+							"FROM Reserve " +
+							"INNER JOIN Cars ON Reserve.carid = Cars.carid";
+					pStmt = conn.prepareStatement(sql);
+					rs = pStmt.executeQuery();
+
+					while (rs.next()) {
+						Reserve reserve = new Reserve();
+
+						reserve.setSdate(rs.getTimestamp("sdate").toLocalDateTime());
+						reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
+						reserve.setCarname(rs.getString("carname"));
+
+						reserveList.add(reserve);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					closeAll(conn, rs, pStmt);
+				}
+
+				return reserveList;
+		}
+
+
 
 		
 		//以下二つのメソッドも他のDAOにコピペで利用

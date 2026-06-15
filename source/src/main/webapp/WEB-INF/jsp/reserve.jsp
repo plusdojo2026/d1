@@ -14,12 +14,28 @@ function closeModal() {
 	  document.getElementById("editModal").style.display = "none";
 	}
 
+function formatDate(str) {
+	  if (!str) return "";
+
+	  // "2026-06-15T10:30:00+09:00" → "2026-06-15T10:30"
+	  return str.substring(0, 16);
+	}
+
+
+
+
 const events = [
   <c:forEach var="r" items="${list}">
     {
-      title: '${r.purpose} ${r.username}',
+      title: '${r.purpose}',
       start: '${r.sdate}',   // LocalDateTime → "2026-06-12T10:00:00" 形式
-      end: '${r.fdate}'
+      end: '${r.fdate}',
+      extendedProps: {
+    	    username: '${r.username}',  // ← 名前はここに保持
+    	    no: ${r.reservenumber}
+    	}
+
+    	    
     }<c:if test="${!s.last}">,</c:if>
   </c:forEach>
 ];
@@ -37,12 +53,22 @@ const events = [
       },
       eventClick: function(info) {
     	  document.getElementById("editNo").value = info.event.extendedProps.no;
-    	  document.getElementById("sedit").value = info.event.startStr;
-    	  document.getElementById("fedit").value = info.event.endStr;
+    	  document.getElementById("sedit").value = formatDate(info.event.startStr);
+    	  document.getElementById("fedit").value = formatDate(info.event.endStr);
     	  document.getElementById("pedit").value = info.event.title;
 
     	  document.getElementById("editModal").style.display = "block";
+
+    	},
+      
+      eventDidMount: function(info) {
+    	    const username = info.event.extendedProps.username;
+
+    	    // カレンダー上の表示をカスタム
+    	    info.el.querySelector('.fc-event-title').innerHTML =
+    	        info.event.title + '<br><span style="font-size:12px; color:#555;">' + username + '</span>';
     	}
+
 ,
       events: events
     });
@@ -73,9 +99,9 @@ const events = [
 <body>
   <form method="get" action="/d1/ReserveServlet">
   <select class="sel" name="select"onchange="this.form.submit()">
-    <option value = "プリウス" ${sort=='プリウス' ? 'selected' : ''}>プリウス</option>
-    <option value = "アクア" ${sort=='アクア' ? 'selected' : ''}>アクア</option> 
-	<option value = "ヤリス" ${sort=='ヤリス' ? 'selected' : ''}>ヤリス</option>
+    <option value = "プリウス" ${select=='プリウス' ? 'selected' : ''}>プリウス</option>
+    <option value = "アクア" ${select=='アクア' ? 'selected' : ''}>アクア</option> 
+	<option value = "ヤリス" ${select=='ヤリス' ? 'selected' : ''}>ヤリス</option>
 	</select>
   </form>
   <div id='calendar'></div>
@@ -118,7 +144,7 @@ const events = [
 <h3>予約編集</h3>
 
 <form method="POST" action="/d1/ReserveServlet">
-  <input type="hidden" id="editNo" name="no">
+  番号<input type="text" id="editNo" name="reservenumber">
 
   開始日時：<input type="datetime-local" id="sedit" name="sdate"><br><br>
   終了日時：<input type="datetime-local" id="fedit" name="fdate"><br><br>

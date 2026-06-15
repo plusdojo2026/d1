@@ -6,11 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import main.java.dto.IdPw;
+import dto.Login;
 
-public class IdPwDAO {
+public class LoginDAO {
 	// 引数で指定されたidpwでログイン成功ならtrueを返す
-	public boolean isLoginOK(IdPw idpw) {
+	public boolean isLoginOK(Login login) {
 		Connection conn = null;
 		boolean loginResult = false;
 
@@ -24,10 +24,10 @@ public class IdPwDAO {
 					"root", "password");
 
 			// SELECT文を準備する
-			String sql = "SELECT count(*) FROM IdPw WHERE userid=? AND password=?";
+			String sql = "SELECT count(*) FROM Idpw WHERE userid=? AND password=?";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
-			pStmt.setString(1, idpw.getUserid());
-			pStmt.setString(2, idpw.getPassword());
+			pStmt.setString(1, login.getUserid());
+			pStmt.setString(2, login.getPassword());
 
 			// SELECT文を実行し、結果表を取得する
 			ResultSet rs = pStmt.executeQuery();

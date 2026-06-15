@@ -6,35 +6,35 @@
 <meta charset="UTF-8">
 <title>車種別</title>
 <div class="hamburger-menu">
-	<input type="checkbox" id="menu-btn-check">
-    <label for="menu-btn-check" class="menu-btn"><span></span></label>
+        <input type="checkbox" id="menu-btn-check">
+        <label for="menu-btn-check" class="menu-btn"><span></span></label>
         <!--ここからメニュー-->
-    <div class="menu-content">
-		<ul>
-            <li>
-                <p>目次</p>
-            </li>
-            <li>
-                 <a href="/meishi/HomeServlet">ホームページ</a>
-            </li>                
-            <li>
-                 <a href="/meishi/LoginServlet">ログイン</a>
-            </li>
-            <li>
-                 <a href="/meishi/SearchServlet">検索</a>
-            </li>
-            <li>
-                  <a href="/meishi/RegistServlet">登録</a>
-            </li>
-            <li>
-                  <a href="/meishi/itiranServlet">一覧</a>
-            </li>                
-         </ul>
-    </div>
+        <div class="menu-content">
+            <ul>
+                <li>
+                    <p>メニュー</p>
+                </li>
+                <li>
+                    <a href="/meishi/HomeServlet">ホームページ</a>
+                </li>                
+                <li>
+                    <a href="/meishi/LoginServlet">ログイン</a>
+                </li>
+                <li>
+                    <a href="/meishi/SearchServlet">検索</a>
+                </li>
+                <li>
+                    <a href="/meishi/RegistServlet">登録</a>
+                </li>
+                <li>
+                    <a href="/meishi/itiranServlet">一覧</a>
+                </li>                
+            </ul>
+        </div>
         <!--ここまでメニュー-->
-</div>
+    </div>
 
- <select name="kind">
+ <select name="kind" class="selectbox">
 	<option value="1">プリウス</option>
 	<option value="2">軽</option>
 	<option value="3">アリウス</option>
@@ -43,41 +43,55 @@
 </head>
 <body>
 <form method="POST" action="/d1/CarsServlet">
-<img src="" alt="外装写真">
+<img src="c:\Users\User\Documents\サンプル\site\images\home-hero.jpg" alt="外装写真" class="photo">
 
 <h2>現在の状況</h2>
-<p>利用状況</p>
-<div class="card-view">
-<div class="card-content">
-    <div class="card-field">
-        <label>外装</label>
-        <value>${e.company}</value>
-    </div>
-    <div class="card-field">
-        <label>匂い</label>
-        <value>${e.name}</value>
-    </div>
-    <div class="card-field">
-        <label>備品</label>
-        <value>${e.phone}</value>
-    </div>
-    <div class="card-field">
-        <label>ガソリン</label>
-        <value>${e.email}</value>
-    </div>
-    <div class="card-field">
-        <label>忘れ物</label>
-        <value></value>
-    </div>
+<div class="info-box">
+    車内の状況と利用者履歴を閲覧することが出来ます。
 </div>
-</div>
+<table class="table-view">
+	<tr>
+		<th>チェック項目</th>
+		<th>状態</th>
+	</tr>
+	<tr>
+		<td>外装</td>
+		<td>変化なし</td>
+	</tr>
+	<tr>
+		<td>匂い</td>
+		<td>user2</td>
+	</tr>
+	<tr>
+		<td>ガソリン</td>
+		<td>user3</td>
+	</tr>
+    <tr>
+		<td>忘れ物</td>
+		<td>user3</td>
+	</tr>
+</table>
 
 <img src="" alt="todoフォーム写真" class="photo">
 
-<div>
-<p>利用者履歴</p>
-
-</div>
+<table class="table-view">
+	<tr>
+		<th>利用履歴</th>
+		<th>利用者</th>
+	</tr>
+	<tr>
+		<td>2026/06/15</td>
+		<td>user1</td>
+	</tr>
+	<tr>
+		<td>2026/06/10</td>
+		<td>user2</td>
+	</tr>
+	<tr>
+		<td>2026/06/05</td>
+		<td>user3</td>
+	</tr>
+</table>
 </form>
 </body>
 </html>

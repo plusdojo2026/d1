@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.ReserveDAO;
 import dto.Reserve;
+import dto.Result;
 
 /**
  * Servlet implementation class LoginServlet
@@ -37,7 +38,6 @@ public class ReserveServlet extends HttpServlet {
 //		String userid = (String) request.getSession().getAttribute("userid");
 		String select = request.getParameter("select");//車種別からの遷移時にcarnameもらう
 //		int carid = Integer.parseInt(request.getParameter("carid"));
-		int carid = 1;
 
 		
 		ReserveDAO dao = new ReserveDAO();
@@ -59,11 +59,11 @@ public class ReserveServlet extends HttpServlet {
 	    }
 	    else {
 	    	// sort が null のときのデフォルト
-	    	list = dao.Select(select);
+	    	list = dao.Select("プリウス");
 		    request.setAttribute("list", list);
 	    }
 	    
-		
+	    request.setAttribute("select", select);
 		// ReserveServletにフォワードする
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/reserve.jsp");
 		dispatcher.forward(request, response);
@@ -79,6 +79,7 @@ public class ReserveServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 //		String userid = (String) request.getSession().getAttribute("userid");
 		String userid = "user01";
+		String select = request.getParameter("select");
 		String purpose = request.getParameter("purpose");
 		LocalDateTime sdate = null;
 		String sdateStr = request.getParameter("sdate");
@@ -91,11 +92,37 @@ public class ReserveServlet extends HttpServlet {
 		    fdate = LocalDateTime.parse(fdateStr);
 		}
 		int carid = 1;
+	    
+	    String noStr = request.getParameter("reservenumber");
+	    int reservenumber = -1;
+	    if (noStr != null && noStr.matches("\\d+")) {
+	        reservenumber = Integer.parseInt(noStr);
+	    }
 		
 		ReserveDAO dao = new ReserveDAO();
+		if ("登録".equals(request.getParameter("regist"))) {
+			if (dao.insert(new Reserve(userid,sdate,fdate,carid,purpose))) { // 登録成功
+				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "/webappAns/MenuServlet"));
+			} else { // 登録失敗
+				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/webappAns/MenuServlet"));
+			}
+		} else if ("更新".equals(request.getParameter("submit"))) {
 
-		Reserve dao1 = new Reserve(userid,sdate,fdate,carid,purpose);
-		int reservenumber = dao.insert(dao1);
+		    if (dao.update(new Reserve(reservenumber,sdate,fdate,purpose))){  
+		        // 既存予約の場合のみ UPDATE
+		        request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/ReserveServlet"));
+			} else { // 更新失敗
+				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/ReserveServlet"));
+			}
+		} else if("削除".equals(request.getParameter("submit"))){
+			if (dao.delete(reservenumber)) { // 削除成功
+				request.setAttribute("result", new Result("削除成功！", "レコードを削除しました。", "/d1/ReserveServlet"));
+			} else { // 削除失敗
+				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/ReserveServlet"));
+			}
+		}
+		
+
 
 //		if (reservenumber == -1) {
 //		    request.setAttribute("result", new Result("登録失敗！", "会社情報の登録に失敗しました。", "/d1/ReserveServlet"));
@@ -107,7 +134,7 @@ public class ReserveServlet extends HttpServlet {
 
 		
 		// 結果ページにフォワードする
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/d1/ReserveServlet");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result.jsp");
 		dispatcher.forward(request, response);
 	}
 }
