@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import dao.TodoDAO;
+import dto.Todo;
 
 /**
  * Servlet implementation class TodoServlet
@@ -46,7 +47,7 @@ public class TodoServlet extends HttpServlet {
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
 		HttpSession session = request.getSession();
 		if (session.getAttribute("id") == null) {
-			response.sendRedirect("//LoginServlet");
+			response.sendRedirect("/d1/LoginServlet");
 			return;
 		}
 
@@ -60,16 +61,33 @@ public class TodoServlet extends HttpServlet {
 		String insideitemmemo = request.getParameter("insideitemmemo");
 		String gasolineamount = request.getParameter("gasolineamount");
 		String lostitem = request.getParameter("lostitem");
-		String createddate = request.getParameter("createddate");
+		
+		String createddateStr = request.getParameter("createddate");
+		java.time.LocalDateTime createddate = null;
+		
 		String lostitemmemo = request.getParameter("lostitemmemo");
 		int userid = Integer.parseInt(request.getParameter("userid"));
 		
+		 if (createddateStr != null  && !createddateStr.isEmpty()) {
+		        createddate = java.time.LocalDateTime.parse(createddateStr);
+		    }
+
 		// 登録処理を行う
-		  if (request.getParameter("createddate") != null) {
-		        TodoDAO.setCreateddate(java.time.LocalDateTime.parse(request.getParameter("createddate")));
-		  }
+		Todo todo = new Todo();
+	    todo.setTodoid(todoid);
+	    todo.setCarid(carid);
+	    todo.setOutsidephoto(outsidephoto);
+	    todo.setOutsidememo(outsidememo);
+	    todo.isSmell(smell);
+	    todo.setInsideitemmemo(insideitemmemo);
+	    todo.setGasolineamount(gasolineamount);
+	    todo.setLostitem(lostitem);
+	    todo.setLostitemmemo(lostitemmemo);
+	    todo.setUserid(userid);
+	    todo.setCreateddate(createddate);
+	 
 		TodoDAO dao = new TodoDAO();
-		boolean result = dao.insert(Todo);
+	    boolean result = dao.insert(Todo);
 
 		// 結果ページにフォワードする
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp");
