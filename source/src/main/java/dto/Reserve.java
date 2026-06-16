@@ -31,6 +31,12 @@ public class Reserve implements Serializable {
 		super();
 		this.reservenumber = reservenumber;
 	}
+	
+	public Reserve(int carid,String carname) {
+		super();
+		this.carname = carname;
+		this.carid = carid;
+	}
 
 	public Reserve(int reservenumber, LocalDateTime sdate, LocalDateTime fdate, String purpose) {
 		super();

@@ -14,10 +14,11 @@ public class Todo implements Serializable {
 	private boolean lostitem;
 	private LocalDateTime createddate;
 	private String lostitemmemo;
-	private int userid;
-
+	private String userid;
+	private boolean equipmentcheck;
+	
 	public Todo(int todoid, int carid, String outsidephoto, String outsidememo, boolean smell, String insideitemmemo,
-			String gasolineamount, boolean lostitem, LocalDateTime createddate, String lostitemmemo, int userid) {
+			String gasolineamount, boolean lostitem, LocalDateTime createddate, String lostitemmemo, String userid) {
 
 		this.todoid = todoid;
 		this.carid = carid;
@@ -30,6 +31,10 @@ public class Todo implements Serializable {
 		this.createddate = createddate;
 		this.lostitemmemo = lostitemmemo;
 		this.userid = userid;
+	}
+
+	public Todo() {
+		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
 	public int getTodoid() {
@@ -112,11 +117,19 @@ public class Todo implements Serializable {
 		this.lostitemmemo = lostitemmemo;
 	}
 
-	public int getUserid() {
+	public String getUserid() {
 		return userid;
 	}
 
-	public void setUserid(int userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
+	}
+
+	public boolean isEquipmentcheck() {
+		return equipmentcheck;
+	}
+
+	public void setEquipmentcheck(boolean equipmentcheck) {
+		this.equipmentcheck = equipmentcheck;
 	}
 }

@@ -124,6 +124,70 @@ import dto.Reserve;
 			return cardList;	
 		}
 		
+		public List<Reserve> carList() {
+			Connection conn = getConnection();
+			ResultSet rs = null;
+			PreparedStatement pStmt = null;
+			List<Reserve> cardList = new ArrayList<>();
+			
+			try {
+				// SQL文を準備する
+//				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
+				
+				String sql = "SELECT DISTINCT carid,carname "
+				        + "FROM Cars" ;
+				pStmt = conn.prepareStatement(sql);
+
+				// SQL文を完成させる
+
+				// SQL文を実行し、結果表を取得する
+				rs = pStmt.executeQuery();
+
+				// 結果表をコレクションにコピーする
+				while (rs.next()) {
+					 Reserve bc = new Reserve(
+							rs.getInt("carid"), 
+							rs.getString("carname")
+					    );
+					cardList.add(bc);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				cardList = null;
+			} finally {
+				closeAll(conn,rs,pStmt);
+			}
+			// 結果を返す
+			return cardList;	
+		}
+		
+		public int findCarid(String carname) {
+
+		    String sql =
+		        "SELECT carid " +
+		        "FROM Cars " +
+		        "WHERE carname LIKE ? ";
+
+		    try (Connection conn = getConnection();
+		         PreparedStatement pStmt = conn.prepareStatement(sql)) {
+
+		        // 会社名（部分一致）
+		        pStmt.setString(1, "%" + carname.trim() + "%");
+
+		        ResultSet rs = pStmt.executeQuery();
+
+		        if (rs.next()) {
+		            return rs.getInt("carid");
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return -1; // 見つからなかった
+		}
+
+		
 		
 		public boolean update(Reserve card) {
 			Connection conn = getConnection();
@@ -274,10 +338,7 @@ import dto.Reserve;
 
 				return reserveList;
 		}
-
-
-
-		
+	
 		//以下二つのメソッドも他のDAOにコピペで利用
 			//接続を行うメソッド
 			private Connection getConnection() {

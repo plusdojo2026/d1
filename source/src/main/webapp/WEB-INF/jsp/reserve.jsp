@@ -67,14 +67,23 @@ const events = [
     	    // カレンダー上の表示をカスタム
     	    info.el.querySelector('.fc-event-title').innerHTML =
     	        info.event.title + '<br><span style="font-size:12px; color:#555;">' + username + '</span>';
-    	}
-
-,
+    	},
       events: events
     });
 
     calendar.render();//カレンダーの更新
   });
+</script>
+<script>
+const startInput = document.getElement('start');
+const startInput = document.getElement('end');
+
+startInput.addEventListener('change',function(){
+	  endInput.min = this.value;
+	    if (endInput.value && endInput.value < this.value) {
+	        endInput.value = this.value;
+	      },
+});
 
 </script>
 <style>
@@ -97,13 +106,14 @@ const events = [
 </style>
 </head>
 <body>
-  <form method="get" action="/d1/ReserveServlet">
-  <select class="sel" name="select"onchange="this.form.submit()">
-    <option value = "プリウス" ${select=='プリウス' ? 'selected' : ''}>プリウス</option>
-    <option value = "アクア" ${select=='アクア' ? 'selected' : ''}>アクア</option> 
-	<option value = "ヤリス" ${select=='ヤリス' ? 'selected' : ''}>ヤリス</option>
+  <form id = carfrom method="get" action="/d1/ReserveServlet">
+  <select class="ca" name="select"onchange="this.form.submit()">
+    <c:forEach var="ca" items="${carlist}">
+        <option value="${ca.carname}"${select == ca.carname ? 'selected' : ''}>${ca.carname}</option>
+    </c:forEach>
 	</select>
   </form>
+  
   <div id='calendar'></div>
   
    <form id="reserve_form" method="POST" action="/d1/ReserveServlet">
@@ -111,17 +121,18 @@ const events = [
       <tr>
         <td>
           <label>番号<br>
+          <input type="hidden" name="select" value="${select}">
           <input type="hidden" name="reservenumber" value="（自動採番）" readonly="readonly" style="background-color: lightgray">
           </label>
         </td>
         <td>
-          <label>開始日<br>
-          <input type="datetime-local" name="sdate">
+          <label for = "start">開始日<br>
+          <input type="datetime-local" id="start" name="sdate">
           </label>
         </td>
         <td>
-          <label>終了日<br>
-          <input type="datetime-local" name="fdate">
+          <label for = "end">終了日<br>
+          <input type="datetime-local" id="end" name="fdate">
           </label>
         </td>
         <td>
