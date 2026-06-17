@@ -5,10 +5,13 @@ import java.time.LocalDateTime;
 
 public class Gasoline implements Serializable {
 	private int gasolineid;
-	private int userid;
+	private String userid;
 	private String stationname;
+	private int gasolineprice;
+	private LocalDateTime createddate;
+	private String resultMessage;
 
-	public Gasoline(int gasolineid, int userid, String stationname, int gasolineprice, LocalDateTime createddate) {
+	public Gasoline(int gasolineid, String userid, String stationname, int gasolineprice, LocalDateTime createddate) {
 
 		this.gasolineid = gasolineid;
 		this.userid = userid;
@@ -17,8 +20,13 @@ public class Gasoline implements Serializable {
 		this.createddate = createddate;
 	}
 
-	private int gasolineprice;
-	private LocalDateTime createddate;
+	public String getResultMessage() {
+		return resultMessage;
+	}
+
+	public void setResultMessage(String resultMessage) {
+		this.resultMessage = resultMessage;
+	}
 
 	public int getGasolineid() {
 		return gasolineid;
@@ -28,11 +36,11 @@ public class Gasoline implements Serializable {
 		this.gasolineid = gasolineid;
 	}
 
-	public int getUserid() {
+	public String getUserid() {
 		return userid;
 	}
 
-	public void setUserid(int userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
 

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,144 +12,138 @@ import dto.Gasoline;
 
 public class GasolineDAO {
 
-    // 登録
-    public boolean insert(Gasoline gasoline) {
+	// 登録
+	public boolean insert(Gasoline gasoline) {
+		Connection conn = null;
+		boolean result = false;
 
-        Connection conn = null;
+		try {
+			// JDBCドライバを読み込む
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
-        try {
+			// データベースに接続する
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false"
+					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
+			// SQL文を準備する
+			String sql = "INSERT INTO gasoline " + "(userid, stationname, gasolineprice, createddate) "
+					+ "VALUES (?, ?, ?, ?)";
 
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/d1?"
-                + "characterEncoding=utf8&useSSL=false"
-                + "&serverTimezone=GMT%2B9"
-                + "&rewriteBatchedStatements=true",
-                "root",
-                "password");
+			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-            String sql =
-                "INSERT INTO gasoline "
-              + "(userid, stationname, gasolineprice, createddate) "
-              + "VALUES (?, ?, ?, ?)";
+			pStmt.setString(1, gasoline.getUserid());
+			pStmt.setString(2, gasoline.getStationname());
+			pStmt.setInt(3, gasoline.getGasolineprice());
+			pStmt.setTimestamp(4, java.sql.Timestamp.valueOf(gasoline.getCreateddate()));
 
-            PreparedStatement pStmt =
-                    conn.prepareStatement(sql);
+			// SQL文を実行する
+			if (pStmt.executeUpdate() == 1) {
+				result = true;
+			}
 
-            pStmt.setString(1, "admin");
-            pStmt.setString(2, gasoline.getStationname());
-            pStmt.setInt(3, gasoline.getGasolineprice());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			// データベースを切断
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
-            pStmt.setTimestamp(
-                4,
-                java.sql.Timestamp.valueOf(
-                    gasoline.getCreateddate()));
+		return result;
+	}
 
-            int result =
-                    pStmt.executeUpdate();
+	// 一覧取得
+	public List<Gasoline> selectAll() {
+		Connection conn = null;
+		List<Gasoline> list = new ArrayList<>();
 
-            return result == 1;
+		try {
+			// JDBCドライバを読み込む
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
-        } catch(Exception e) {
+			// データベースに接続する
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false"
+					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
 
-            e.printStackTrace();
-        }
+			// SQL文を準備する
+			String sql = "SELECT * FROM gasoline ORDER BY createddate DESC";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-        return false;
-    }
-    // 一覧取得
-    public List<Gasoline> selectAll() {
-    	Connection conn = null;
-        List<Gasoline> list =
-                new ArrayList<>();
-     
-        try{// JDBCドライバを読み込む
-     			Class.forName("com.mysql.cj.jdbc.Driver");
-     			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
-				+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
-				"root", "password");
+			// SQL実行
+			ResultSet rs = pStmt.executeQuery();
 
-            String sql =
-                "SELECT * FROM gasoline "
-              + "ORDER BY createddate DESC";
+			// 結果を格納
+			while (rs.next()) {
+				list.add(new Gasoline(rs.getInt("gasolineid"), rs.getString("userid"), rs.getString("stationname"),
+						rs.getInt("gasolineprice"), rs.getTimestamp("createddate").toLocalDateTime()));
+			}
 
-            PreparedStatement pStmt =
-                    conn.prepareStatement(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			// データベースを切断
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
-            ResultSet rs =
-                    pStmt.executeQuery();
+		return list;
+	}
 
-            while(rs.next()) {
+	// 最安値取得
+	public Gasoline getMinPrice() {
+		Connection conn = null;
+		Gasoline gasoline = null;
 
-                list.add(
-                    new Gasoline(
-                        rs.getInt("gasolineid"),
-                        0,
-                        rs.getString("stationname"),
-                        rs.getInt("gasolineprice"),
-                        rs.getTimestamp("createddate")
-                          .toLocalDateTime()
-                    )
-                );
-            }
+		try {
+			// JDBCドライバを読み込む
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
-        } catch(Exception e) {
+			// データベースに接続する
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false"
+					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
 
-            e.printStackTrace();
-        }
+			// SQL文を準備する
+			String sql = "SELECT * FROM gasoline " + "ORDER BY gasolineprice ASC LIMIT 1";
 
-        return list;
-    }
+			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-    // 最安値取得
-    public Gasoline getMinPrice() {
+			// SQL実行
+			ResultSet rs = pStmt.executeQuery();
 
-        Connection conn = null;
+			if (rs.next()) {
+				gasoline = new Gasoline(rs.getInt("gasolineid"), rs.getString("userid"), rs.getString("stationname"),
+						rs.getInt("gasolineprice"), rs.getTimestamp("createddate").toLocalDateTime());
+			}
 
-        Gasoline gasoline = null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			// データベースを切断
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
-        try {
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/d1?"
-                + "characterEncoding=utf8&useSSL=false"
-                + "&serverTimezone=GMT%2B9"
-                + "&rewriteBatchedStatements=true",
-                "root",
-                "password");
-
-            String sql =
-                "SELECT * FROM gasoline "
-              + "ORDER BY gasolineprice ASC "
-              + "LIMIT 1";
-
-            PreparedStatement pStmt =
-                    conn.prepareStatement(sql);
-
-            ResultSet rs =
-                    pStmt.executeQuery();
-
-            if(rs.next()) {
-
-                gasoline =
-                    new Gasoline(
-                        rs.getInt("gasolineid"),
-                        0,
-                        rs.getString("stationname"),
-                        rs.getInt("gasolineprice"),
-                        rs.getTimestamp("createddate")
-                          .toLocalDateTime()
-                    );
-            }
-
-        } catch(Exception e) {
-
-            e.printStackTrace();
-        }
-
-        return gasoline;
-    	}
+		return gasoline;
+	}
 }

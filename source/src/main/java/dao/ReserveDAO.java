@@ -377,6 +377,43 @@ import dto.Reserve;
 
 			return reserveList;
 	}
+		
+		public List<Reserve> reserveAlls(String userid) {
+			Connection conn = getConnection();
+			ResultSet rs = null;
+			PreparedStatement pStmt = null;
+			List<Reserve> reserveList = new ArrayList<>();
+
+			try {
+				String sql =
+						"SELECT Reserve.fdate " +
+						"FROM Reserve " +
+						"INNER JOIN Cars ON Reserve.carid = Cars.carid " + 
+						"WHERE userid LIKE ? AND " + 
+						"DATE(sdate) = CURRENT_DATE AND CURRENT_TIMESTAMP < sdate AND CURRENT_TIMESTAMP < fdate "
+						+ "ORDER BY sdate";
+				pStmt = conn.prepareStatement(sql);
+				pStmt.setString(1, "%" + userid.trim() + "%");
+				
+				rs = pStmt.executeQuery();
+				
+				
+
+				while (rs.next()) {
+					Reserve reserve = new Reserve();
+
+					reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
+
+					reserveList.add(reserve);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				closeAll(conn, rs, pStmt);
+			}
+
+			return reserveList;
+	}
 	
 		//以下二つのメソッドも他のDAOにコピペで利用
 			//接続を行うメソッド

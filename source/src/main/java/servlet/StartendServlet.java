@@ -41,6 +41,13 @@ public class StartendServlet extends HttpServlet {
 		List<Reserve> reservelist = dao.reserveAll(userid);
 		request.setAttribute("reservelist",reservelist );
 		
+		List<Reserve> reservelists = dao.reserveAlls(userid);
+		List<Reserve> top1 = reservelists.size() > 0 
+				? reservelists.subList(0,1)
+				: reservelists;
+		request.setAttribute("top1",top1 );
+		
+		
 		RequestDispatcher dispatcher =
 			    request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
 			dispatcher.forward(request, response);

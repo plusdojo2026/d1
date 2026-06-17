@@ -1,15 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <style>
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-    display: none;
-}
-
+    /* 初期状態は文字列を非表示にする */
+    #finish {
+        display: none;
+    }
 </style>
 
 <title>Insert title here</title>
@@ -18,14 +19,29 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 <body>
 
 <p id="realtime"></p><br>
+
+<c:forEach var="top1" items="${top1}">
+  <p id = "finish">終了日時${top1.fdate.toString().substring(5, 16).replace('T', ' ')}</p>
+
+  
+<br>
+  </c:forEach><br>
+
 <c:forEach var="syo" items="${reservelist}">
 
   開始日時${syo.sdate.toString().replace('T', ' ')} ～ 終了日時${syo.fdate.toString().replace('T', ' ')}
   使用車${syo.carname}
-  目的<input type="text" name="purpose" value="${syo.purpose}"><br>
+  目的${syo.purpose}<br>
   </c:forEach>
  
+  <button onclick="showText()">開始</button>
+  <button id = "ed">終了</button>
  <script>
+ function showText() {
+     
+     document.getElementById("finish").style.display = "block";
+ }
+
 
  function showClock() {
      let nowTime = new Date();

@@ -1,162 +1,88 @@
-<%@ page contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@ taglib prefix="c"
-    uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>ガソリン価格比較</title>
-
-<style>
-
-body{
-    text-align:center;
-    font-family:sans-serif;
-}
-
-/* ロゴ */
-.logo{
-    width:200px;
-    height:auto;
-    margin-top:10px;
-    margin-bottom:20px;
-}
-
-.error{
-    color:red;
-}
-
-.card{
-    display:inline-block;
-    border:1px solid black;
-    border-radius:10px;
-    padding:10px;
-    margin:5px;
-    width:100px;
-}
-
-.result{
-    background-color:#e8dd88;
-    border-radius:15px;
-    padding:15px;
-    width:250px;
-    margin:20px auto;
-}
-
-</style>
-
 </head>
 <body>
 
-<!-- ロゴ表示 -->
-<img src="images/SaleS.png"
-     alt="ロゴ"
-     class="logo">
+	<h1>ガソリン価格比較</h1>
 
-<form action="GasolineServlet"
-      method="post">
+	<form action="${pageContext.request.contextPath}/GasolineServlet"
+		method="post" onsubmit="return validateForm()">
+		ガソリンスタンド名 <br> <input type="text" name="stationname"> <br>
 
-スタンド名
+		ガソリン価格 <br> <input type="text" name="gasolineprice"> <br>
+		<input type="reset" name="reset" value="クリア" onclick="clearError()">
+		<input type="submit" value="比較">
 
-<br>
+	</form>
+	<div id="errorMsg" style="color: red;"></div>
+	<br>
 
-<input type="text"
-       name="stationname">
+	<c:if test="${minGasoline != null}">
+		<br>結果
+		<br> ガソリンスタンド名： ${minGasoline.stationname}
+		<br>今日の最安値は ${minGasoline.gasolineprice} 円
+		<br> ガソリン平均価格： ${avgPrice} 円
+		<br> 差額： ${minGasoline.gasolineprice - avgPrice}
+	</c:if>
 
-<br><br>
 
-価格
+	<h2>履歴一覧</h2>
 
-<br>
+	<c:forEach var="gasoline" items="${gasolineList}">
+	スタンド名：${gasoline.stationname}
+	<br>
+	価格：${gasoline.gasolineprice}
+	<br>
+	結果：${gasoline.resultMessage}
+	<br>
+		<br>
+	</c:forEach>
+</body>
+<script>
+	function validateForm() {
+		const station = document.forms[0].stationname.value;
+		const price = document.forms[0].gasolineprice.value;
+		const errorMsg = document.getElementById("errorMsg");
 
-<input type="text"
-       name="gasolineprice">
+		errorMsg.innerHTML = ""; // 毎回リセット
 
-<br><br>
+		// スタンド名チェック
+		if (station.trim() === "") {
+			errorMsg.innerHTML = "ガソリンスタンド名を入力してください";
+			return false;
+		}
 
-<input type="reset"
-       value="クリア">
+		// 価格未入力
+		if (price.trim() === "") {
+			errorMsg.innerHTML = "価格を入力してください";
+			return false;
+		}
 
-<input type="submit"
-       value="比較">
+		// 数字チェック
+		if (!/^[0-9]+$/.test(price)) {
+			errorMsg.innerHTML = "価格は数字で入力してください";
+			return false;
+		}
 
-</form>
+		// 0以下チェック
+		if (parseInt(price) <= 0) {
+			errorMsg.innerHTML = "価格は1以上を入力してください";
+			return false;
+		}
 
-<br>
+		return true;
 
-<c:if test="${not empty error}">
-    <div class="error">
-        ${error}
-    </div>
-</c:if>
-
-<div class="result">
-
-<h3>結果</h3>
-
-スタンド名：
-${stationname}
-
-<br><br>
-
-<c:if test="${minGasoline != null}">
-最安値：
-${minGasoline.gasolineprice} 円
-</c:if>
-
-<br><br>
-
-平均価格：
-${avgPrice} 円
-
-<br><br>
-
-差額：
-${diff} 円
-
-<br><br>
-
-結果：
-${resultMessage}
-
-</div>
-
-<c:if test="${minGasoline != null}">
-
-<h3>最安値スタンド</h3>
-
-スタンド名：
-${minGasoline.stationname}
-
-<br>
-
-価格：
-${minGasoline.gasolineprice} 円
-
-<br><br>
-
-</c:if>
-
-<h3>履歴一覧</h3>
-
-<table border="1">
-
-<tr>
-    <th>スタンド名</th>
-    <th>価格</th>
-</tr>
-
-<c:forEach var="g"
-           items="${gasolineList}">
-
-<tr>
-    <td>${g.stationname}</td>
-    <td>${g.gasolineprice}円</td>
-</tr>
-
-</c:forEach>
-
-</table>
+	}
+	function clearError() {
+		const errorMsg = document.getElementById("errorMsg");
+		errorMsg.innerHTML = "";
+	}
+</script>
+</html>
