@@ -25,26 +25,24 @@ public class TodoDAO {
 			// SQL文を準備する
 			String sql = """
 			INSERT INTO Todo
-					(todoid, carid, outsidephoto, outsidememo, smell,
+					(carid, outsidephoto, outsidememo, smell,
 					 insideitemmemo, gasolineamount, lostitem,
-					 createddate, lostitemmemo, userid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					 lostitemmemo, userid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 					""";
 			
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
-			pStmt.setInt(1, card.getTodoid());
-			pStmt.setInt(2, card.getCarid());
-			pStmt.setString(3, card.getOutsidephoto());
-			pStmt.setString(4, card.getOutsidememo());
-			pStmt.setBoolean(5, card.isSmell());
-			pStmt.setString(6, card.getInsideitemmemo());
-			pStmt.setString(7, card.getGasolineamount());
-			pStmt.setBoolean(8, card.isLostitem());
-			pStmt.setObject(9, card.getCreateddate());
-			pStmt.setString(10, card.getLostitemmemo());
-			//pStmt.setInt(11, card.getUserid());
+			pStmt.setInt(1, card.getCarid());
+			pStmt.setString(2, card.getOutsidephoto());
+			pStmt.setString(3, card.getOutsidememo());
+			pStmt.setBoolean(4, card.isSmell());
+			pStmt.setString(5, card.getInsideitemmemo());
+			pStmt.setString(6, card.getGasolineamount());
+			pStmt.setBoolean(7, card.isLostitem());
+			pStmt.setString(8, card.getLostitemmemo());
+			pStmt.setString(9, card.getUserid());
 			
 			// SQL文を実行する
 			if (pStmt.executeUpdate() == 1) {
