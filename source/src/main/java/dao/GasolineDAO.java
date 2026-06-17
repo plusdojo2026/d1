@@ -11,18 +11,22 @@ import dto.Gasoline;
 
 public class GasolineDAO {
 
-    private final String URL =
-        "jdbc:mysql://localhost:3306/d1?characterEncoding=UTF-8";
-
-    private final String USER = "root";
-    private final String PASS = "password";
-
     // 登録
     public boolean insert(Gasoline gasoline) {
 
-        try(Connection conn =
-                DriverManager.getConnection(
-                        URL, USER, PASS)) {
+        Connection conn = null;
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/d1?"
+                + "characterEncoding=utf8&useSSL=false"
+                + "&serverTimezone=GMT%2B9"
+                + "&rewriteBatchedStatements=true",
+                "root",
+                "password");
 
             String sql =
                 "INSERT INTO gasoline "
@@ -32,27 +36,17 @@ public class GasolineDAO {
             PreparedStatement pStmt =
                     conn.prepareStatement(sql);
 
-            // idpwテーブルに存在するuseridを指定
             pStmt.setString(1, "admin");
-
-            pStmt.setString(
-                    2,
-                    gasoline.getStationname());
-
-            pStmt.setInt(
-                    3,
-                    gasoline.getGasolineprice());
+            pStmt.setString(2, gasoline.getStationname());
+            pStmt.setInt(3, gasoline.getGasolineprice());
 
             pStmt.setTimestamp(
-                    4,
-                    java.sql.Timestamp.valueOf(
-                            gasoline.getCreateddate()));
+                4,
+                java.sql.Timestamp.valueOf(
+                    gasoline.getCreateddate()));
 
             int result =
                     pStmt.executeUpdate();
-
-            System.out.println(
-                    "登録件数=" + result);
 
             return result == 1;
 
@@ -63,16 +57,17 @@ public class GasolineDAO {
 
         return false;
     }
-
     // 一覧取得
     public List<Gasoline> selectAll() {
-
+    	Connection conn = null;
         List<Gasoline> list =
                 new ArrayList<>();
-
-        try(Connection conn =
-                DriverManager.getConnection(
-                        URL, USER, PASS)) {
+     
+        try{// JDBCドライバを読み込む
+     			Class.forName("com.mysql.cj.jdbc.Driver");
+     			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
+				+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
+				"root", "password");
 
             String sql =
                 "SELECT * FROM gasoline "
@@ -109,11 +104,21 @@ public class GasolineDAO {
     // 最安値取得
     public Gasoline getMinPrice() {
 
+        Connection conn = null;
+
         Gasoline gasoline = null;
 
-        try(Connection conn =
-                DriverManager.getConnection(
-                        URL, USER, PASS)) {
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/d1?"
+                + "characterEncoding=utf8&useSSL=false"
+                + "&serverTimezone=GMT%2B9"
+                + "&rewriteBatchedStatements=true",
+                "root",
+                "password");
 
             String sql =
                 "SELECT * FROM gasoline "
@@ -145,5 +150,5 @@ public class GasolineDAO {
         }
 
         return gasoline;
-    }
+    	}
 }

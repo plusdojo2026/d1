@@ -102,9 +102,9 @@ public class ReserveServlet extends HttpServlet {
 		
 		if ("登録".equals(request.getParameter("regist"))) {
 			if (dao.insert(new Reserve(userid,sdate,fdate,carid,purpose))) { // 登録成功
-				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "/webappAns/MenuServlet"));
+				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "d1/ReserveServlet"));
 			} else { // 登録失敗
-				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/webappAns/MenuServlet"));
+				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/d1/HomeServlet"));
 			}
 		} else if ("更新".equals(request.getParameter("submit"))) {
 
@@ -112,13 +112,13 @@ public class ReserveServlet extends HttpServlet {
 		        // 既存予約の場合のみ UPDATE
 		        request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/ReserveServlet"));
 			} else { // 更新失敗
-				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/ReserveServlet"));
+				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/HomeServlet"));
 			}
 		} else if("削除".equals(request.getParameter("submit"))){
 			if (dao.delete(reservenumber)) { // 削除成功
 				request.setAttribute("result", new Result("削除成功！", "レコードを削除しました。", "/d1/ReserveServlet"));
 			} else { // 削除失敗
-				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/ReserveServlet"));
+				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/HomeServlet"));
 			}
 		}
 		

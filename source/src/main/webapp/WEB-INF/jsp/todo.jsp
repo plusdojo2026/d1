@@ -3,29 +3,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SaleS</title>
+<title>SaleS_todo</title>
 </head>
 <body>
 <h1>Todoフォーム</h1>
 <hr>
-<form method="POST" action="/d1/TodoServlet">
-outsidephoto
-outsidememo
-smell
-insideitemmemo
-gasolineamount
-lostitem
-lostitemmemo
-外装写真<input type="text" name="company"><br>
-ガソリン残量<input type="text" name="department"><br>
-外装メモ<input type="text" name="position"><br>
-タバコ匂い<input type="text" name="name"><br>
-備品メモ<input type="text" name="zipcode"><br>
-忘れ物確認<input type="text" name="address"><br>
-忘れ物メモ<input type="text" name="phone"><br>
+<form action="${pageContext.request.contextPath}/TodoServlet" method="post">
+外装写真<input type="text" name="outsidephoto"><br>
+ガソリン残量<input type="text" name="gasolineamount"><br>
+外装メモ<input type="text" name="outsidememo"><br>
+タバコ匂い<input type="checkbox" name="smell"><br>
+備品メモ<input type="text" name="insideitemmemo"><br>
+忘れ物確認<input type="checkbox" name="lostitem"><br>
+忘れ物メモ<input type="text" name="lostitemmemo"><br>
+<input type="text" name="todoid">
+<input type="text" name="carid">
+<input type="text" name="userid">
 <p>
-	<input type="submit" name="regist" value="検索">
-	<input type="submit" name="regist" value="検索">
+	<input type="submit" name="submit" value="送信">
+	<input type="submit" name="submit" value="キャンセル">
 </p>
 </form>
 </body>

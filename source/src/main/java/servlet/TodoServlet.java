@@ -28,16 +28,16 @@ public class TodoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
 		HttpSession session = request.getSession();
-		if (session.getAttribute("userid") == null) {
-			response.sendRedirect("/d1/LoginServlet");
+		if (session.getAttribute("id") == null) {
+			response.sendRedirect("LoginServlet");
 			return;
 		}
 
 		// 登録ページにフォワードする
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp");
 		dispatcher.forward(request, response);
 	}
-
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -47,42 +47,47 @@ public class TodoServlet extends HttpServlet {
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
 		HttpSession session = request.getSession();
 		if (session.getAttribute("id") == null) {
-			response.sendRedirect("/d1/LoginServlet");
+			response.sendRedirect("LoginServlet");
 			return;
 		}
 
 		// リクエストパラメータを取得する
 		request.setCharacterEncoding("UTF-8");
-
+		int todoid = Integer.parseInt(request.getParameter("todoid"));
 		int carid = Integer.parseInt(request.getParameter("carid"));
-
 		String outsidephoto = request.getParameter("outsidephoto");
 		String outsidememo = request.getParameter("outsidememo");
 		boolean smell = request.getParameter("smell") != null;
 		String insideitemmemo = request.getParameter("insideitemmemo");
-		boolean equipmentcheck = request.getParameter("equipmentcheck") != null;
-		boolean lostitem = request.getParameter("lostitem") != null;
-		String lostitemmemo = request.getParameter("lostitemmemo");
 		String gasolineamount = request.getParameter("gasolineamount");
-		String userid = (String) session.getAttribute("userid");
+		boolean lostitem = request.getParameter("lostitem") != null;
+		
+		String createddateStr = request.getParameter("createddate");
+		java.time.LocalDateTime createddate = null;
+		
+		String lostitemmemo = request.getParameter("lostitemmemo");
+		int userid = Integer.parseInt(request.getParameter("userid"));
+		
+		 if (createddateStr != null  && !createddateStr.isEmpty()) {
+		        createddate = java.time.LocalDateTime.parse(createddateStr);
+		    }
 
 		// 登録処理を行う
 		Todo todo = new Todo();
-		todo.setCarid(carid);
-		todo.setOutsidephoto(outsidephoto);
-		todo.setOutsidememo(outsidememo);
-		todo.setSmell(smell);
-		todo.setInsideitemmemo(insideitemmemo);
-		todo.setGasolineamount(gasolineamount);
-		todo.setEquipmentcheck(equipmentcheck);
-		todo.setLostitem(lostitem);
-		todo.setLostitemmemo(lostitemmemo);
-		todo.setUserid(userid);
-
+	    todo.setTodoid(todoid);
+	    todo.setCarid(carid);
+	    todo.setOutsidephoto(outsidephoto);
+	    todo.setOutsidememo(outsidememo);
+	    todo.setSmell(smell);
+	    todo.setInsideitemmemo(insideitemmemo);
+	    todo.setGasolineamount(gasolineamount);
+	    todo.setLostitem(lostitem);
+	    todo.setLostitemmemo(lostitemmemo);
+	   // todo.setUserid(userid);
+	    todo.setCreateddate(createddate);
+	 
 		TodoDAO dao = new TodoDAO();
-		boolean insertresult = dao.insert(todo);
-
-		request.setAttribute("insertresult", insertresult);
+	    dao.insert(todo);
 
 		// 結果ページにフォワードする
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp");

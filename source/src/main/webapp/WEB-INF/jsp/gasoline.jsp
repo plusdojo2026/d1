@@ -1,33 +1,84 @@
 <%@ page contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 
 <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core"%>
+    uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>ガソリン価格比較</title>
+
+<style>
+
+body{
+    text-align:center;
+    font-family:sans-serif;
+}
+
+/* ロゴ */
+.logo{
+    width:200px;
+    height:auto;
+    margin-top:10px;
+    margin-bottom:20px;
+}
+
+.error{
+    color:red;
+}
+
+.card{
+    display:inline-block;
+    border:1px solid black;
+    border-radius:10px;
+    padding:10px;
+    margin:5px;
+    width:100px;
+}
+
+.result{
+    background-color:#e8dd88;
+    border-radius:15px;
+    padding:15px;
+    width:250px;
+    margin:20px auto;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1>ガソリン価格比較</h1>
+<!-- ロゴ表示 -->
+<img src="images/SaleS.png"
+     alt="ロゴ"
+     class="logo">
 
-<form action="${pageContext.request.contextPath}/GasolineServlet"
+<form action="GasolineServlet"
       method="post">
 
 スタンド名
+
+<br>
+
 <input type="text"
        name="stationname">
 
 <br><br>
 
 価格
+
+<br>
+
 <input type="text"
        name="gasolineprice">
 
 <br><br>
+
+<input type="reset"
+       value="クリア">
 
 <input type="submit"
        value="比較">
@@ -37,10 +88,14 @@ uri="http://java.sun.com/jsp/jstl/core"%>
 <br>
 
 <c:if test="${not empty error}">
-    ${error}
+    <div class="error">
+        ${error}
+    </div>
 </c:if>
 
-<hr>
+<div class="result">
+
+<h3>結果</h3>
 
 スタンド名：
 ${stationname}
@@ -67,45 +122,41 @@ ${diff} 円
 結果：
 ${resultMessage}
 
-<hr>
+</div>
 
 <c:if test="${minGasoline != null}">
 
-<h2>最安値スタンド</h2>
+<h3>最安値スタンド</h3>
 
 スタンド名：
 ${minGasoline.stationname}
 
-<br><br>
+<br>
 
 価格：
 ${minGasoline.gasolineprice} 円
 
+<br><br>
+
 </c:if>
 
-<hr>
+<h3>履歴一覧</h3>
 
-<h2>履歴一覧</h2>
+<table border="1">
+
+<tr>
+    <th>スタンド名</th>
+    <th>価格</th>
+</tr>
 
 <c:forEach var="g"
            items="${gasolineList}">
 
-スタンド名：
-${g.stationname}
-
-<br><br>
-
-価格：
-${g.gasolineprice} 円
-
-<br><br>
-
-登録日時：
-${g.createddate}
-
-<hr>
+<tr>
+    <td>${g.stationname}</td>
+    <td>${g.gasolineprice}円</td>
+</tr>
 
 </c:forEach>
 
-</body>
-</html>
+</table>

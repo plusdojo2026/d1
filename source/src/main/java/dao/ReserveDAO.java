@@ -338,6 +338,45 @@ import dto.Reserve;
 
 				return reserveList;
 		}
+		
+		public List<Reserve> reserveAll(String userid) {
+			Connection conn = getConnection();
+			ResultSet rs = null;
+			PreparedStatement pStmt = null;
+			List<Reserve> reserveList = new ArrayList<>();
+
+			try {
+				String sql =
+						"SELECT Reserve.sdate, Reserve.fdate, Cars.carname ,purpose " +
+						"FROM Reserve " +
+						"INNER JOIN Cars ON Reserve.carid = Cars.carid " + 
+						"WHERE userid LIKE ? AND " + 
+						"sdate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY);";
+				pStmt = conn.prepareStatement(sql);
+				pStmt.setString(1, "%" + userid.trim() + "%");
+				
+				rs = pStmt.executeQuery();
+				
+				
+
+				while (rs.next()) {
+					Reserve reserve = new Reserve();
+
+					reserve.setSdate(rs.getTimestamp("sdate").toLocalDateTime());
+					reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
+					reserve.setCarname(rs.getString("carname"));
+					reserve.setPurpose(rs.getString("purpose"));
+
+					reserveList.add(reserve);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				closeAll(conn, rs, pStmt);
+			}
+
+			return reserveList;
+	}
 	
 		//以下二つのメソッドも他のDAOにコピペで利用
 			//接続を行うメソッド

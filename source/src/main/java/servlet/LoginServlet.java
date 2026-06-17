@@ -48,16 +48,16 @@ public class LoginServlet extends HttpServlet {
 		if (iDao.isLoginOK(new Login(userid, password))) { // ログイン成功
 			// セッションスコープにIDを格納する
 			HttpSession session = request.getSession();
-			session.setAttribute("id", userid);
+			session.setAttribute("userid", userid);
 
 			// メニューサーブレットにリダイレクトする
-			response.sendRedirect("/d1/ContactServlet");
+			response.sendRedirect("/d1/HomeServlet");
 		} else { // ログイン失敗
 			// リクエストスコープに、タイトル、メッセージ、戻り先を格納する
 			request.setAttribute("result", new Result("ログイン失敗！", "IDまたはPWに間違いがあります。", "/d1/LoginServlet"));
-
+			
 			// 結果ページにフォワードする
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result2.jsp");
 			dispatcher.forward(request, response);
 		}
 	}
