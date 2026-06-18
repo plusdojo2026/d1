@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <header>
@@ -41,27 +42,41 @@
 
 <meta charset="UTF-8">
 <title>SaleS</title>
+<style>
+#s {
+    display: flex;
+    flex-wrap: wrap; /* 折り返し */
+    gap: 20px;       /* 余白 */
+}
 
+#s a {
+    width: calc(50% - 20px); /* 2列にする */
+    box-sizing: border-box;
+}
+
+#s img {
+    width: 100%;  /* 画像を枠いっぱいに */
+    height: auto;
+    display: block;
+}
+
+
+</style>
 </head>
 <body>
 	<div class="notice">
 		<h2>お知らせ</h2>
 		${notice}
 	</div>
-	<a href="${pageContext.request.contextPath}/CarServlet?carid=1"> <img
-		alt="car1" src="${pageContext.request.contextPath}/img/car1.jpg">
-	</a>
 
-	<a href="${pageContext.request.contextPath}/CarServlet?carid=2"> <img
-		alt="car2" src="${pageContext.request.contextPath}/img/car2.jpg">
-	</a>
+	
+<div id = "s">
+	<c:forEach var="syo" items="${homeList}">
 
-	<a href="${pageContext.request.contextPath}/CarServlet?carid=3"> <img
-		alt="car3" src="${pageContext.request.contextPath}/img/car3.jpg">
+	  <a href="${pageContext.request.contextPath}/CarServlet?select=${carimage}"> <img
+		alt="car${syo.carid}" src="${pageContext.request.contextPath}/img/${syo.carimage}">
 	</a>
-
-	<a href="${pageContext.request.contextPath}/CarServlet?carid=4"> <img
-		alt="car4" src="${pageContext.request.contextPath}/img/car4.jpg">
-	</a>
+ 	</c:forEach>
+ 	</div>
 </body>
 </html>

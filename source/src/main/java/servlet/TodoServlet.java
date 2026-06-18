@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import dao.ReserveDAO;
@@ -34,22 +35,21 @@ public class TodoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
-//		HttpSession session = request.getSession();
-//		if (session.getAttribute("id") == null) {
-//			response.sendRedirect("LoginServlet");
-//			return;
-//		}
-		String select = request.getParameter("select");//車種別からの遷移時にcarnameもらう
-
+		HttpSession session = request.getSession();
+		if (session.getAttribute("userid") == null) {
+			response.sendRedirect("LoginServlet");
+			return;
+		}
+		String select = request.getParameter("select");// 車種別からの遷移時にcarnameもらう
 
 		ReserveDAO dao = new ReserveDAO();
-		
+
 		List<Reserve> carlist = dao.carList();
 		request.setAttribute("carlist", carlist);
 
 		// select が null または空ならデフォルト値を設定
 		if (select == null || select.isEmpty()) {
-		    select = "プリウス";
+			select = "プリウス";
 		}
 
 		// 選択された車種で検索
@@ -62,7 +62,7 @@ public class TodoServlet extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp");
 		dispatcher.forward(request, response);
 	}
-	
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -70,66 +70,59 @@ public class TodoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
-//		HttpSession session = request.getSession();
-//		if (session.getAttribute("id") == null) {
-//			response.sendRedirect("LoginServlet");
-//			return;
-//		}
-		
-		// リクエストパラメータを取得する
+		HttpSession session = request.getSession();
+		if (session.getAttribute("userid") == null) {
+			response.sendRedirect("LoginServlet");
+			return;
+		}
+		String userid = (String) session.getAttribute("userid");
+
 		request.setCharacterEncoding("UTF-8");
-		//int todoid = Integer.parseInt(request.getParameter("todoid"));
-		//int carid = Integer.parseInt(request.getParameter("carid"));
-		
-		String outsidephoto = request.getParameter("outsidephoto");
+
 		Part photo = request.getPart("outsidephoto");
-        String fileName = photo.getSubmittedFileName();
-        String uploadPath =
-        	    getServletContext().getRealPath("/upload");
-        	File uploadDir = new File(uploadPath);
-        	if (!uploadDir.exists()) {
-        	    uploadDir.mkdirs();
-        	}
-        	photo.write(uploadPath + File.separator + fileName);
-		
+		String fileName = photo.getSubmittedFileName();
+		String uploadPath = "C:/pleiades/workspace/d1/src/main/webapp/img/";
+		File uploadDir = new File(uploadPath);
+		if (!uploadDir.exists()) {
+			uploadDir.mkdirs();
+		}
+		photo.write(uploadPath + fileName);
+
 		String outsidememo = request.getParameter("outsidememo");
 		boolean smell = request.getParameter("smell") != null;
 		String insideitemmemo = request.getParameter("insideitemmemo");
 		String gasolineamount = request.getParameter("gasolineamount");
 		boolean lostitem = request.getParameter("lostitem") != null;
+		String lostitemmemo = request.getParameter("lostitemmemo");
+
 		String select = request.getParameter("select");
 
-		String createddateStr = request.getParameter("createddate");
-		java.time.LocalDateTime createddate = null;
-		
-		String lostitemmemo = request.getParameter("lostitemmemo");
-		//String userid = Integer.parseInt(request.getParameter("userid"));
-		String userid = "user01";
-		 if (createddateStr != null  && !createddateStr.isEmpty()) {
-		        createddate = java.time.LocalDateTime.parse(createddateStr);
-		    }
-		 ReserveDAO dao = new ReserveDAO();
-			int carid = dao.findCarid(select);
-			
-		// 登録処理を行う
+		ReserveDAO dao = new ReserveDAO();
+		int carid = dao.findCarid(select);
+
 		Todo todo = new Todo();
-	    //todo.setTodoid(todoid);
-	    todo.setCarid(carid);
-	    todo.setOutsidephoto(fileName);
-	    todo.setOutsidememo(outsidememo);
-	    todo.setSmell(smell);
-	    todo.setInsideitemmemo(insideitemmemo);
-	    todo.setGasolineamount(gasolineamount);
-	    todo.setLostitem(lostitem);
-	    todo.setLostitemmemo(lostitemmemo);
-	    todo.setUserid(userid);
-	    //todo.setCreateddate(createddate);
-	 
+		todo.setCarid(carid);
+		todo.setOutsidephoto(fileName);
+		todo.setOutsidememo(outsidememo);
+		todo.setSmell(smell);
+		todo.setInsideitemmemo(insideitemmemo);
+		todo.setGasolineamount(gasolineamount);
+		todo.setLostitem(lostitem);
+		todo.setLostitemmemo(lostitemmemo);
+		todo.setUserid(userid);
+
 		TodoDAO dao1 = new TodoDAO();
-	    dao1.insert(todo);
+		boolean result = dao1.insert(todo);
+
+		System.out.println("insert result = " + result);
+
+		System.out.println("carid=" + carid);
+		System.out.println("select=" + select);
+		System.out.println("userid=" + userid);
+		System.out.println("insert result=" + result);
 
 		// 結果ページにフォワードする
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
 		dispatcher.forward(request, response);
 	}
 }

@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import dto.Todo;
@@ -24,13 +25,13 @@ public class TodoDAO {
 
 			// SQL文を準備する
 			String sql = """
-			INSERT INTO Todo
-					(carid, outsidephoto, outsidememo, smell,
-					 insideitemmemo, gasolineamount, lostitem,
-					 lostitemmemo, userid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-					""";
-			
+					INSERT INTO Todo
+							(carid, outsidephoto, outsidememo, smell,
+							 insideitemmemo, gasolineamount, lostitem,
+							 lostitemmemo, userid)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+							""";
+
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -43,7 +44,7 @@ public class TodoDAO {
 			pStmt.setBoolean(7, card.isLostitem());
 			pStmt.setString(8, card.getLostitemmemo());
 			pStmt.setString(9, card.getUserid());
-			
+
 			// SQL文を実行する
 			if (pStmt.executeUpdate() == 1) {
 				result = true;
@@ -64,5 +65,43 @@ public class TodoDAO {
 		}
 		// 結果を返す
 		return result;
-	}	
+	}
+
+	public boolean hasTodo(int carid,String userid) {
+		Connection conn = null;
+		boolean exists = false;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
+					"password");
+
+			String sql = "SELECT COUNT(*) FROM Todo WHERE carid = ? AND userid = ?";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, carid);
+			pStmt.setString(2, userid);
+
+			ResultSet rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				exists = rs.getInt(1) > 0;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		return exists;
+	}
 }

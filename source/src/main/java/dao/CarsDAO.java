@@ -140,7 +140,8 @@ public class CarsDAO {
 					+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
 					"root", "password");
 			// SQL文を準備する
-			String sql = "SELECT outsidememo,smell,insideitemmemo,gasolineamount,lostitemmemo FROM Todo WHERE carid = ? ";
+			String sql = "SELECT outsidememo,smell,insideitemmemo,gasolineamount,lostitemmemo,outsidephoto FROM Todo WHERE carid = ? " + 
+			             "ORDER BY createddate desc";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, carid);
@@ -155,6 +156,7 @@ public class CarsDAO {
 				todo.setInsideitemmemo(rs.getString("insideitemmemo"));
 				todo.setGasolineamount(rs.getString("gasolineamount"));
 				todo.setLostitemmemo(rs.getString("lostitemmemo"));
+				todo.setOutsidephoto(rs.getString("outsidephoto"));// 追加0618
 
 				todoList.add(todo);
 			}
@@ -218,6 +220,47 @@ public class CarsDAO {
 			}
 		}
 		return historyList;
+	}
+	
+	//追加0617 home用
+	public List<Cars> findhome() {
+		Connection conn = null;
+		List<Cars> carList = new ArrayList<>();
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9",
+					"root", "password");
+
+			String sql = "SELECT carid,carname,carimage FROM Cars";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			ResultSet rs = pStmt.executeQuery();
+
+			while (rs.next()) {
+				Cars car = new Cars();
+
+				car.setCarid(rs.getInt("carid"));
+				car.setCarname(rs.getString("carname"));
+				car.setCarimage(rs.getString("carimage"));
+
+				carList.add(car);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return carList;
 	}
 
 }

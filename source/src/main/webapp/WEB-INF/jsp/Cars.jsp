@@ -39,23 +39,28 @@
 	</div>
 
 
-	<select name="carid">
-		<option value="1" <c:if test="${carid == 1}">selected</c:if>>プリウス</option>
-		<option value="2" <c:if test="${carid == 2}">selected</c:if>>アクア</option>
-		<option value="3" <c:if test="${carid == 3}">selected</c:if>>フィット</option>
-		<option value="4" <c:if test="${carid == 4}">selected</c:if>>ノート</option>
-	</select>
+	<form id=carfrom method="get" action="/d1/CarServlet">
+		<select class="ca" name="select" onchange="this.form.submit()">
+			<c:forEach var="ca" items="${carlist}">
+				<option value="${ca.carname}"
+					${select == ca.carname ? 'selected' : ''}>${ca.carname}</option>
+			</c:forEach>
+		</select>
+	</form>
+
 </header>
 </head>
 <body>
-	<form method="POST" action="/d1/CarsServlet">
-		<img src="c:\Users\User\Documents\サンプル\site\images\home-hero.jpg"
-			alt="外装写真" class="photo">
+	<a href="${pageContext.request.contextPath}/StartendServlet?carid=${carid}">
+		利用開始 </a>
+	<form method="GET" action="/d1/CarsServlet">
+		<img src="${pageContext.request.contextPath}/img/${carImage}"
+			alt="home写真" class="photo">
 
 		<h2>現在の車の利用状況</h2>
 		<p>${carCondition}</p>
 		<div class="info-box">車内の状況と利用者履歴を閲覧することが出来ます。</div>
-		<c:forEach var="todo" items="${todoList}">
+		<c:forEach var="todo" items="${top1}">
 			<tr>
 				<td>外装 ${todo.outsidememo}<br></td>
 				<td>匂い ${todo.smell ? '有' : '無'}<br></td>
@@ -63,11 +68,11 @@
 				<td>ガソリン ${todo.gasolineamount}<br></td>
 				<td>忘れ物 ${todo.lostitem ? '有' : '無'}<br></td>
 				<td>${todo.lostitemmemo}<br></td>
+				
 
 			</tr>
+			<img alt="todoフォーム写真" src="${pageContext.request.contextPath}/img/${todo.outsidephoto}">
 		</c:forEach>
-
-		<img src="" alt="todoフォーム写真" class="photo"><br>
 
 		<div class="history">
 			<h2>使用履歴</h2>
