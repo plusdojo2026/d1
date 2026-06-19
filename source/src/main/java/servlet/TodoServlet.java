@@ -69,37 +69,58 @@ public class TodoServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// もしもログインしていなかったらログインサーブレットにリダイレクトする
+
 		HttpSession session = request.getSession();
 		if (session.getAttribute("userid") == null) {
 			response.sendRedirect("LoginServlet");
 			return;
 		}
-		String userid = (String) session.getAttribute("userid");
 
+		String userid = (String) session.getAttribute("userid");
 		request.setCharacterEncoding("UTF-8");
 
+		
 		Part photo = request.getPart("outsidephoto");
-		String fileName = photo.getSubmittedFileName();
+		String fileName = (photo != null) ? photo.getSubmittedFileName() : null;
+
+		String outsidememo = request.getParameter("outsidememo");
+		String smellStr = request.getParameter("smell");
+		String insideitemmemo = request.getParameter("insideitemmemo");
+		String gasolineamount = request.getParameter("gasolineamount");
+		String lostitemStr = request.getParameter("lostitem");
+		String lostitemmemo = request.getParameter("lostitemmemo");
+		String select = request.getParameter("select");
+
+		//入力チェック
+		if (fileName == null || fileName.isEmpty() || smellStr == null || lostitemStr == null || gasolineamount == null
+				|| gasolineamount.isEmpty()) {
+
+			request.setAttribute("error", "必須項目が入力されていません");
+
+			request.getRequestDispatcher("/WEB-INF/jsp/todo.jsp").forward(request, response);
+			return;
+		}
+
+		//変換 
+		boolean smell = "1".equals(smellStr);
+		boolean lostitem = true; // チェックされている前提
+
+		//carid取得
+		ReserveDAO dao = new ReserveDAO();
+		int carid = dao.findCarid(select);
+
+		//ファイル保存
 		String uploadPath = "C:/pleiades/workspace/d1/src/main/webapp/img/";
 		File uploadDir = new File(uploadPath);
 		if (!uploadDir.exists()) {
 			uploadDir.mkdirs();
 		}
-		photo.write(uploadPath + fileName);
 
-		String outsidememo = request.getParameter("outsidememo");
-		boolean smell = request.getParameter("smell") != null;
-		String insideitemmemo = request.getParameter("insideitemmemo");
-		String gasolineamount = request.getParameter("gasolineamount");
-		boolean lostitem = request.getParameter("lostitem") != null;
-		String lostitemmemo = request.getParameter("lostitemmemo");
+		if (photo != null) {
+			photo.write(uploadPath + fileName);
+		}
 
-		String select = request.getParameter("select");
-
-		ReserveDAO dao = new ReserveDAO();
-		int carid = dao.findCarid(select);
-
+		//DTO
 		Todo todo = new Todo();
 		todo.setCarid(carid);
 		todo.setOutsidephoto(fileName);
@@ -111,18 +132,17 @@ public class TodoServlet extends HttpServlet {
 		todo.setLostitemmemo(lostitemmemo);
 		todo.setUserid(userid);
 
+		//DAO
 		TodoDAO dao1 = new TodoDAO();
 		boolean result = dao1.insert(todo);
 
-		System.out.println("insert result = " + result);
-
+		System.out.println("insert result=" + result);
 		System.out.println("carid=" + carid);
 		System.out.println("select=" + select);
 		System.out.println("userid=" + userid);
-		System.out.println("insert result=" + result);
 
-		// 結果ページにフォワードする
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
 		dispatcher.forward(request, response);
 	}
 }

@@ -4,24 +4,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
 <title>車管理アプリ</title>
 </head>
 <body>
-	<h1>ログイン</h1>
-	<p>※ID=user01, PW=pass01 でログインできます。
-	<hr>
+	<div class="background-opacity-container">
+	<div id="login-box">
 	<form id="login" method="POST" action="/d1/LoginServlet">
+	<h1>ログイン</h1>
 		<p>
 			ユーザーID<br> <input type="text" name="userid">
 		</p>
 		<p>
 			パスワード<br> <input type="password" name="password">
 		</p>
-		<input type="submit" name="submit" value="ログイン"> <input
-			type="reset" name="reset" value="リセット"> <span id="error"
-			class="error"></span>
-		<p>ログイン情報を忘れてしまった場合はこちらをクリック</p>
+		<span id="error" class="error"></span><br>
+		<input type="submit" name="submit" value="ログイン"> 
+		<input type="reset" name="reset" value="リセット"> 
+		<p>ログイン情報を忘れてしまった場合は<br>
+		<a href = "/d1/ContactServlet">こちらをクリック</a></p>
 	</form>
+	</div>
+	</div>
 	<script>
 		'use strict';
 		let form = document.getElementById('login');

@@ -6,11 +6,14 @@
 <html>
 <head>
 <meta charset='utf-8' />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
 <script
 	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
 <script
 	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/locales/ja.global.min.js"></script>
 <script>
+
 
 function closeModal() {
 	  document.getElementById("editModal").style.display = "none";
@@ -32,6 +35,7 @@ const events = [
       end: '${r.fdate}',
       extendedProps: {
     	    username: '${r.username}',  // ← 名前はここに保持
+    	    userid: '${r.userid}',
     	    no: ${r.reservenumber}
     	}
 
@@ -52,6 +56,13 @@ const events = [
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       eventClick: function(info) {
+    	  const eventOwnerId = String(info.event.extendedProps.userid);
+    	      	    const currentUserId =  "${sessionScope.userid}";
+
+    	        	    console.log("クリックされたユーザーID:", eventOwnerId);
+
+    	      	    if (eventOwnerId !== currentUserId) {
+    	      	      return; }
     	  document.getElementById("editNo").value = info.event.extendedProps.no;
     	  document.getElementById("sedit").value = formatDate(info.event.startStr);
     	  document.getElementById("fedit").value = formatDate(info.event.endStr);
@@ -87,33 +98,40 @@ startInput.addEventListener('change', function () {
 });
 
 </script>
-<style>
-body {
-	margin: 40px 10px;
-	padding: 0;
-	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 14px;
-}
-
-#calendar {
-	max-width: 1100px;
-	margin: 0 auto;
-}
-
-#editModal {
-    display: none;
-    position: fixed;
-    top: 20%;
-    left: 35%;
-    background: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    z-index: 9999;
-}
-</style>
 </head>
-<body>
+<body class="body">
+<header>
+<div class="hamburger-menu">
+        <input type="checkbox" id="menu-btn-check">
+        <label for="menu-btn-check" class="menu-btn"><span></span></label>
+        <!--ここからメニュー-->
+        <div class="menu-content">
+            <ul>
+                <li>
+                    <p>メニュー</p>
+                </li>
+                <li>
+                    <a href="/d1/ReserveServlet">📅予約</a>
+                </li>                
+                <li>
+                    <a href="/d1/GasolineServlet">🔥ガソリン</a>
+                </li>
+                <li>
+                    <a href="/d1/TodoServlet">✅TO DO</a>
+                </li>
+                <li>
+                    <a href="/d1/StartendServlet">開始/終了</a>
+                </li>
+                <li>
+                    <a href="/d1/LoginServlet">🔚ログアウト</a>
+                </li>
+                <li>
+                    <a href="/d1/ContactServlet">❓お問い合わせ</a>
+                </li>                 
+            </ul>
+        </div>
+        <!--ここまでメニュー-->
+    </div>
 	<form id=carfrom method="get" action="/d1/ReserveServlet">
 		<select class="ca" name="select" onchange="this.form.submit()">
 			<c:forEach var="ca" items="${carlist}">
@@ -122,49 +140,72 @@ body {
 			</c:forEach>
 		</select>
 	</form>
-
+</header>
 	<div id='calendar'></div>
 
-	<form id="reserve_form" method="POST" action="/d1/ReserveServlet">
-		<table class="regist">
-			<tr>
-				<td><label><br> <input type="hidden"
-						name="select" value="${select}"> <input type="hidden"
-						name="reservenumber" value="（自動採番）" readonly="readonly"
-						style="background-color: lightgray">
-				</label></td>
-				<td><label for="start">予約開始日時<br> <input
-						type="datetime-local" id="start" name="sdate">
-				</label></td>
-				<td><label for="end">予約終了日時<br> <input
-						type="datetime-local" id="end" name="fdate">
-				</label></td>
-				<td><label>目的<br> <input type="text" id="co"
-						name="purpose" placeholder=" "> <!-- <input type="text" id="ur" name="url" placeholder=" "> -->
-				</label></td>
-			</tr>
-			<tr>
-				<td><input type="submit" id="register" name="regist" value="登録">
-					<input type="reset" name="reset" value="リセット"></td>
-			</tr>
+<form id="reserve_form" method="POST" action="/d1/ReserveServlet">
+	<div class="form-container">
+		<label><input type="hidden" name="select" value="${select}"> 
+		<input type="hidden" name="reservenumber" value="（自動採番）" 
+		readonly="readonly"style="background-color: lightgray"></label>
+	<!-- 開始日・終了日・目的を横並び -->
+      <div class="form-row-group">
+        <div class="form-group">
+          <label for="start">開始日</label>
+          <input type="datetime-local" id="start" name="sdate">
+      </div>
+        
+        <div class="form-group">
+          <label for="end">終了日</label>
+          <input type="datetime-local" id="end" name="fdate">
+        </div>
+        
+        <div class="form-group">
+          <label for="co">目的</label>
+          <input type="text" id="co" name="purpose" placeholder="">
+        </div>
+      </div>
 
-		</table>
+      <!-- ボタン -->
+      <div class="form-buttons">
+        <input type="submit" name="regist" value="登録">
+        <input type="reset" name="reset" value="リセット">
+      </div>
+    </div>
 		<span id="error" class="error"></span>
 	</form>
 
-	<div id="editModal">
-		<h3>予約編集</h3>
+<!-- 編集モーダル -->
+  <div id="editModal">
+    <h3>予約編集</h3>
+    <form method="POST" action="/d1/ReserveServlet">
+      <div class="form-row">
+        <label>番号</label>
+        <input type="text" id="editNo" name="reservenumber">
+      </div>
 
-		<form method="POST" action="/d1/ReserveServlet">
-			番号<input type="text" id="editNo" name="reservenumber"> 開始日時：<input
-				type="datetime-local" id="sedit" name="sdate"><br> <br>
-			終了日時：<input type="datetime-local" id="fedit" name="fdate"><br>
-			<br> 目的：<input type="text" id="pedit" name="purpose"><br>
-			<br> <input type="submit" name="submit" value="更新"> <input
-				type="submit" name="submit" value="削除">
-			<button type="button" onclick="closeModal()">閉じる</button>
-		</form>
-	</div>
+      <div class="form-row">
+        <label>開始日時</label>
+        <input type="datetime-local" id="sedit" name="sdate">
+      </div>
+      
+      <div class="form-row">
+        <label>終了日時</label>
+        <input type="datetime-local" id="fedit" name="fdate">
+      </div>
+      
+      <div class="form-row">
+        <label>目的</label>
+        <input type="text" id="pedit" name="purpose">
+      </div>
+
+      <div class="button-group">
+        <input type="submit" name="submit" value="更新">
+        <input type="submit" name="submit" value="削除">
+        <button type="button" onclick="closeModal()">閉じる</button>
+      </div>
+    </form>
+  </div>
 
 
 </body>

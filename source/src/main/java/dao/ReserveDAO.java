@@ -81,7 +81,7 @@ import dto.Reserve;
 				// SQL文を準備する
 //				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
 				
-				String sql = "SELECT Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
+				String sql = "SELECT Idpw.userid,Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
 				        + "FROM Reserve INNER JOIN Idpw ON Reserve.userid = Idpw.userid "
 				        + "LEFT JOIN Cars ON Reserve.carid = Cars.carid "
 				        + "WHERE carname LIKE ? "
@@ -110,7 +110,8 @@ import dto.Reserve;
 							sdate,
 							fdate,
 						    rs.getString("purpose"),
-					        rs.getString("username")
+					        rs.getString("username"),
+					        rs.getString("userid")
 					    );
 					cardList.add(bc);
 				}

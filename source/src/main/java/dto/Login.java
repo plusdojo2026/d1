@@ -2,11 +2,11 @@ package dto;
 
 import java.io.Serializable;
 
-public class IdPw implements Serializable {
+public class Login implements Serializable {
 	private String userid; // ID
 	private String password; // パスワード
 	
-	public IdPw(String userid, String password) {
+	public Login(String userid, String password) {
 		this.userid = userid;
 		this.password = password;
 	}
@@ -28,7 +28,7 @@ public class IdPw implements Serializable {
 	}
 
 	
-	public IdPw() {
+	public Login() {
 		this.userid = "";
 		this.password = "";
 	}

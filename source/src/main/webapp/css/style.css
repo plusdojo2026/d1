@@ -1,0 +1,679 @@
+@charset "UTF-8";
+* {
+    box-sizing: border-box;
+}
+    
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+.header {
+	padding-top: 10px;
+	background-image: url(/img/SaleS.png);
+	background-repeat: repeat-x;
+}
+
+/* ログイン画面 */
+#login-box {
+	margin-top:100px;
+	text-align: center;
+}
+#login-box input[type="text"] {
+	padding: 5px;
+    width: 50%;
+    font-size: 1rem;
+}
+#login-box input[type="password"] {
+    padding: 5px;
+    width: 50%;
+    font-size: 1rem;
+}
+#login-box input[type="submit"] {
+	padding: 10px;
+}
+#login-box input[type="reset"] {
+	padding: 10px;
+}
+#login-box a:link{
+	color: red;
+	text-decoration: none;
+}
+#login-box a:visited{
+	color: red;
+	text-decoration: none;
+}
+#login-box a:hover{
+	color: red;
+	text-decoration: none;
+}
+#login-box a:active{
+	color: red;
+	text-decoration: none;
+}
+.background-opacity-container {
+    position: relative; /* 擬似要素を配置するために必要 */
+    width: 100%;
+    height: 100vh; /* 適宜調整 */
+    overflow: hidden; /* はみ出した擬似要素を隠す */
+}
+.background-opacity-container::before {
+    content: ""; /* 擬似要素にはcontentプロパティが必須 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/d1/img/car4.jpg'); /* ここにあなたの画像URLを設定 */
+    /*background-repeat: no-repeat;*/
+    background-size: cover;
+    opacity: 0.4; /* ここで背景の半透明度を調整 */
+   /* background-size: cover; /* 背景画像を要素に合わせる */
+    background-position: center; /* 背景画像を中央に配置 */
+    z-index: -1; /* テキストの下に配置 */
+    justify-content: center;
+    text-align: center;
+    /*display: flex;*/   
+}
+.background-opacity-container p{
+    color: black;
+    font-size: 1.2em;
+    padding: 20px;
+}
+.background-opacity-container h1 {
+    color: black;
+    padding: 20px;
+}
+
+    /* メニューボタン */
+.menu-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    height: 60px;
+    width: 60px;
+    justify-content: center;
+    align-items: center;
+    z-index: 90;
+}
+.menu-btn span,
+.menu-btn span:before,
+.menu-btn span:after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 25px;
+    border-radius: 3px;
+    background-color: black;
+    position: absolute;
+}
+.menu-btn span:before {
+    bottom: 8px;
+}
+
+#menu-btn-check:checked ~ .menu-btn span {
+    background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/
+}
+#menu-btn-check:checked ~ .menu-btn span::before {
+    bottom: 0;
+    transform: rotate(45deg);
+}
+#menu-btn-check:checked ~ .menu-btn span::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+
+#menu-btn-check {
+    display: none;
+}
+
+.menu-content {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    background-color: #3584bb;
+}
+.menu-content ul {
+    padding: 70px 10px 0;
+}
+.menu-content ul li {
+    border-bottom: solid 1px #ffffff;
+    list-style: none;
+}
+.menu-content ul li a {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    box-sizing: border-box;
+    color:black;
+    text-decoration: none;
+    padding: 9px 15px 10px 0;
+    position: relative;
+}
+.menu-content ul li a::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-top: solid 2px #ffffff;
+    border-right: solid 2px #ffffff;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 11px;
+    top: 16px;
+}
+
+.menu-content {
+    width: 50%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 100%;/*leftの値を変更してメニューを画面外へ*/
+    z-index: 80;
+    background-color: #f2eee7;
+    transition: all 0.5s;/*アニメーション設定*/
+}
+
+#menu-btn-check:checked ~ .menu-content {
+    left: 50%;/*メニューを画面内へ*/
+}
+/* 車種別画面 */
+.info-box {
+    background-color: #cbe8f1;
+    border-left: 4px solid #7698d8;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #555;
+}
+.table-view {
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;
+
+    border-collapse: collapse;
+    background: white;
+
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table-view th,
+.table-view td {
+    padding: 12px 36px;
+    border-bottom: 1px solid #eee;
+}
+
+.table-view th {
+    width: 40%;
+    text-align: left;
+    background: #f7f7f7;
+    color: black;
+    font-size: 18px;
+}
+
+.table-view td {
+    font-size: 16px;
+    color: black;
+}
+
+/* お問い合わせ画面 */
+p,li, td {
+    line-height: 1.7; 
+    font-size: 18px;
+}
+h2 {
+    margin-top: 100px;
+}
+.contact {
+	text-align: center;
+    margin-top: 70px;
+}
+#contact input[type="text"] {
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+    width: 90%;
+    font-size: 1rem;
+}
+#contact textarea {
+	display: block;
+    margin: 0 auto;
+    padding: 30px;
+    width: 90%;
+    font-size: 1rem;
+}
+.contact-btn {
+	text-align: center;
+}
+#contact input[type="submit"], input[type="reset"] {
+	padding:10px;
+	width: 40%;
+}
+.contact-btn input[type="submit"] {
+	background-color: #28a745;
+    color: white;
+    border: none;
+}
+.contact-btn input[type="reset"] {
+	border: none;
+}
+/* 予約画面 */
+#calendar {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+/* ===== 予約登録フォーム ===== */
+#reserve_form {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+/* ===== 開始日・終了日・目的を横並び ===== */
+.form-row-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.form-group input[type="datetime-local"],
+.form-group input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input[type="datetime-local"]:focus,
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* ===== ボタン（右寄せ） ===== */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.form-buttons input[type="submit"],
+.form-buttons input[type="reset"] {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.form-buttons input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.form-buttons input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+
+.form-buttons input[type="reset"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.form-buttons input[type="reset"]:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+
+/* ===== ボタン（右寄せ） ===== */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.form-buttons input[type="submit"],
+.form-buttons input[type="reset"],
+.form-buttons button {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.form-buttons input[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.form-buttons input[type="submit"]:hover {
+    background-color: #28a745;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+
+.form-buttons input[type="reset"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.form-buttons input[type="reset"]:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+.form-buttons .edit-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.form-buttons .edit-btn:hover {
+    background-color: #138496;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(19, 132, 150, 0.3);
+}
+
+#error {
+	color: red;
+}
+/* ===== 編集モーダル ===== */
+#editModal.show::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+#editModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+}
+
+#editModal.show {
+    display: black;
+}
+
+#editModal h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+#editModal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;    
+}
+
+#editModal .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#editModal .form-row label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+#editModal input[type="text"],
+#editModal input[type="datetime-local"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+}
+
+#editModal input[type="text"]:focus,
+#editModal input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+#editModal .button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+#editModal input[type="submit"],
+#editModal button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+#editModal input[type="submit"][value="更新"] {
+    background-color: #28a745;
+    color: white;
+}
+
+#editModal input[type="submit"][value="更新"]:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(33, 136, 56, 0.3);
+}
+
+#editModal input[type="submit"][value="削除"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+#editModal input[type="submit"][value="削除"]:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
+}
+
+#editModal button {
+    background-color: #6c757d;
+    color: white;
+}
+
+#editModal button:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+
+
+/* ホーム画面 */
+.cars a {
+    text-decoration: none;
+    display: block;
+}
+
+.cars img {
+    width: 45%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.cars img:hover {
+    transform: scale(1.05);  /* ホバー時に拡大 */
+}
+.notice {
+        border: 2px solid #333;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        }
+/* ===== レスポンシブ対応 ===== */
+@media (max-width: 768px) {
+    body {
+        margin: 20px 5px;
+    }
+
+    #calendar {
+        margin: 0 auto 30px;
+        padding: 15px;
+    }
+
+    #reserve_form {
+        padding: 20px;
+    }
+
+    .form-row-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-group {
+        min-width: 100%;
+    }
+
+    .form-buttons {
+        flex-direction: row;
+    }
+
+    #editModal {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+.body {
+    	margin: 10px 5px;
+        font-size: 12px;
+    	padding:20px;
+        margin-top:50px;
+    }
+body {
+        margin: 10px 5px;
+        font-size: 16px;
+        
+    }
+    
+
+    #calendar {
+        margin: 0 auto 20px;
+        padding: 10px;
+    }
+
+    #reserve_form {
+        padding: 15px;
+    }
+
+    .form-section label,
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input[type="datetime-local"],
+    .form-group input[type="text"] {
+        font-size: 12px;
+    }
+
+    .form-row-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-buttons input[type="submit"],
+    .form-buttons input[type="reset"],
+    .form-buttons button {
+        width: 100%;
+        padding: 12px 15px;
+    }
+
+    #editModal {
+        width: 98%;
+        padding: 15px;
+    }
+
+    #editModal h3 {
+        font-size: 18px;
+    }
+
+    #editModal .button-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    #editModal input[type="submit"],
+    #editModal button {
+        width: 100%;
+    }
+}
