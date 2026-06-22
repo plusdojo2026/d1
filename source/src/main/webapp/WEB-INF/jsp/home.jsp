@@ -3,66 +3,71 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
-<header>
-	<img alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
-	<div class="hamburger-menu">
-		<input type="checkbox" id="menu-btn-check"> <label
-			for="menu-btn-check" class="menu-btn"></label>
-		<!--ここからメニュー-->
-		<div class="menu-content">
-			<ul>
-				<li>
-					<p>メニュー</p>
-				</li>
-				<li><a href="/d1/HomeServlet">🏠 ホーム</a></li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/reserve.jpg"><a
-					href="/d1/ReserveServlet">予約</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/gasoline.png"><a
-					href="/d1/GasolineServlet">ガソリン</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/todo.png"><a
-					href="/d1/TodoServlet">Todo</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/startend.png"><a
-					href="/d1/StartendServlet">開始/終了</a></li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/logout.png"><a
-					href="/d1/LoginServlet">ログアウト</a></li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/contact.png"><a
-					href="/d1/ContactServlet">お問い合わせ</a></li>
-			</ul>
-		</div>
-		<!--ここまでメニュー-->
-	</div>
-</header>
-
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
 <title>SaleS</title>
 <style>
 #s {
-	display: flex;
-	flex-wrap: wrap; /* 折り返し */
-	gap: 20px; /* 余白 */
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);  /* ← 常に2列 */
+    gap: 10px;
+    max-width: 100%;
+    margin: 0 auto;
+    margin-top: 40px;
 }
 
 #s a {
-	width: calc(50% - 20px); /* 2列にする */
-	box-sizing: border-box;
+	text-decoration: none;
+    display: block;
 }
 
 #s img {
-	width: 100%; /* 画像を枠いっぱいに */
-	height: auto;
-	display: block;
+	width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
 }
 </style>
 </head>
-<body>
+<body class="body">
+<header class="header">
+	<div class="hamburger-menu">
+        <input type="checkbox" id="menu-btn-check">
+        <label for="menu-btn-check" class="menu-btn"><span></span></label>
+        <!--ここからメニュー-->
+        <div class="menu-content">
+            <ul>
+                <li>
+                    <p>メニュー</p>
+                </li>
+                <li>
+                    <a href="/d1/ReserveServlet">📅予約</a>
+                </li>                
+                <li>
+                    <a href="/d1/GasolineServlet">🔥ガソリン</a>
+                </li>
+                <li>
+                    <a href="/d1/TodoServlet">✅TO DO</a>
+                </li>
+                <li>
+                    <a href="/d1/StartendServlet">▶️開始/終了</a>
+                </li>
+                <li>
+                    <a href="/d1/LoginServlet">🔚ログアウト</a>
+                </li>
+                <li>
+                    <a href="/d1/ContactServlet">❓お問い合わせ</a>
+                </li>                 
+            </ul>
+        </div>
+        <!--ここまでメニュー-->
+    </div>
+</header>
+
 	<div class="notice">
 		<h2>お知らせ</h2>
 		${notice}
@@ -95,5 +100,6 @@
 			</a>
 		</c:forEach>
 	</div>
+	
 </body>
 </html>

@@ -21,7 +21,7 @@
 		</p>
 		<span id="error" class="error"></span><br>
 		<input type="submit" name="submit" value="ログイン"> 
-		<input type="reset" name="reset" value="リセット"> 
+		 
 		<p>ログイン情報を忘れてしまった場合は<br>
 		<a href = "/d1/ContactServlet">こちらをクリック</a></p>
 	</form>

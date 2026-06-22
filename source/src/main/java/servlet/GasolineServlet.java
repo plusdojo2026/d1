@@ -25,11 +25,11 @@ public class GasolineServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
-				HttpSession session = request.getSession();
-				if (session.getAttribute("userid") == null) {
-					response.sendRedirect("/d1/LoginServlet");
-					return;
-				}
+		HttpSession session = request.getSession();
+		if (session.getAttribute("userid") == null) {
+			response.sendRedirect("/d1/LoginServlet");
+			return;
+		}
 		GasolineDAO dao = new GasolineDAO();
 
 		List<Gasoline> gasolineList = dao.selectAll();
@@ -60,7 +60,7 @@ public class GasolineServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		System.out.println("doPost実行");
 		request.setCharacterEncoding("UTF-8");
 
 		String stationname = request.getParameter("stationname");
@@ -106,37 +106,38 @@ public class GasolineServlet extends HttpServlet {
 
 		GasolineDAO dao = new GasolineDAO();
 
+		System.out.println("登録開始");
 		boolean result = dao.insert(gasoline);
+		System.out.println("登録終了");
 		System.out.println("登録結果=" + result);
-		List<Gasoline> gasolineList = dao.selectAll();
-		for (Gasoline gasoline1 : gasolineList) {
-			int diff1 = gasoline1.getGasolineprice() - avgPrice;
+//		List<Gasoline> gasolineList = dao.selectAll();
+//		for (Gasoline gasoline1 : gasolineList) {
+//			int diff1 = gasoline1.getGasolineprice() - avgPrice;
+//
+//			if (diff1 > 0) {
+//				gasoline1.setResultMessage("+" + diff1);
+//			} else if (diff1 < 0) {
+//				gasoline1.setResultMessage(String.valueOf(diff1));
+//			} else {
+//				gasoline1.setResultMessage("±0");
+//			}
+//		}
+//
+//		Gasoline minGasoline = dao.getMinPrice();
+//
+//		request.setAttribute("stationname", stationname);
+//
+//		request.setAttribute("avgPrice", avgPrice);
+//
+//		request.setAttribute("diff", diff);
+//
+//		request.setAttribute("resultMessage", resultMessage);
+//
+//		request.setAttribute("gasolineList", gasolineList);
+//
+//		request.setAttribute("minGasoline", minGasoline);
 
-			if (diff1 > 0) {
-				gasoline1.setResultMessage("+" + diff1);
-			} else if (diff1 < 0) {
-				gasoline1.setResultMessage(String.valueOf(diff1));
-			} else {
-				gasoline1.setResultMessage("±0");
-			}
-		}
-
-		Gasoline minGasoline = dao.getMinPrice();
-
-		request.setAttribute("stationname", stationname);
-
-		request.setAttribute("avgPrice", avgPrice);
-
-		request.setAttribute("diff", diff);
-
-		request.setAttribute("resultMessage", resultMessage);
-
-		request.setAttribute("gasolineList", gasolineList);
-
-		request.setAttribute("minGasoline", minGasoline);
-
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/gasoline.jsp");
-
-		dispatcher.forward(request, response);
+		response.sendRedirect(request.getContextPath() + "/GasolineServlet");
+		return;
 	}
 }

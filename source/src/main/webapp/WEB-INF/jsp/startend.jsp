@@ -4,6 +4,8 @@
 
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
 <head>
 <meta charset="UTF-8">
 <header>
@@ -17,24 +19,12 @@
 				<li>
 					<p>メニュー</p>
 				</li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/reserve.jpg"><a
-					href="/d1/ReserveServlet">予約</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/gasoline.png"><a
-					href="/d1/GasolineServlet">ガソリン</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/todo.png"><a
-					href="/d1/TodoServlet">Todo</a>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/startend.png"><a
-					href="/d1/StartendServlet">開始/終了</a></li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/logout.png"><a
-					href="/d1/LoginServlet">ログアウト</a></li>
-				<li><img alt="SaleS"
-					src="${pageContext.request.contextPath}/img/contact.png"><a
-					href="/d1/ContactServlet">お問い合わせ</a></li>
+				<li><a href="/d1/ReserveServlet">📅予約</a></li>
+				<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
+				<li><a href="/d1/TodoServlet">✅TO DO</a></li>
+				<li><a href="/d1/StartendServlet">開始/終了</a></li>
+				<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
+				<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
 			</ul>
 		</div>
 		<!--ここまでメニュー-->
@@ -71,8 +61,12 @@
   目的${syo.purpose}<br>
 	</c:forEach>
 
-	<button onclick="showText()">開始</button>
+	<button onclick="showText()" ${hasReserve ? '' : 'disabled'}>
+		開始</button>
 	<button type="submit" ${hasTodo ? '' : 'disabled'}>終了</button>
+	<c:if test="${empty reservelist}">
+		<p style="color: red;">予約していません</p>
+	</c:if>
 	<script>
 		function showText() {
 

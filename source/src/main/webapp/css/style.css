@@ -6,6 +6,9 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+header {
+	background: #fafafa;
+}
 .header {
 	padding-top: 10px;
 	background-image: url(/img/SaleS.png);
@@ -180,7 +183,7 @@ body {
 }
 /* 車種別画面 */
 .info-box {
-    background-color: #cbe8f1;
+    background-color: #f8fafc;
     border-left: 4px solid #7698d8;
     padding: 15px;
     border-radius: 6px;
@@ -189,6 +192,19 @@ body {
     color: #555;
 }
 .table-view {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+
+    border-collapse: collapse;
+    background: white;
+
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.history-row {
     width: 100%;
     max-width: 700px;
     margin: 20px auto;
@@ -204,7 +220,7 @@ body {
 
 .table-view th,
 .table-view td {
-    padding: 12px 36px;
+    padding: 5px 26px;
     border-bottom: 1px solid #eee;
 }
 
@@ -226,12 +242,11 @@ p,li, td {
     line-height: 1.7; 
     font-size: 18px;
 }
-h2 {
-    margin-top: 100px;
+#contact {
+	margin-top: 50px;
 }
 .contact {
 	text-align: center;
-    margin-top: 70px;
 }
 #contact input[type="text"] {
     display: block;
@@ -247,22 +262,53 @@ h2 {
     width: 90%;
     font-size: 1rem;
 }
+
 .contact-btn {
 	text-align: center;
+	display: block;
+	margin: 0 auto;
 }
-#contact input[type="submit"], input[type="reset"] {
+#contact input[type="submit"],
+#contact input[type="reset"]  {
 	padding:10px;
-	width: 40%;
+	width: 45%;
+	border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 .contact-btn input[type="submit"] {
 	background-color: #28a745;
     color: white;
     border: none;
 }
+.contact-btn input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
 .contact-btn input[type="reset"] {
 	border: none;
 }
+.contact-btn input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
 /* 予約画面 */
+.ca {
+    padding: 10px 15px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.ca:hover {
+    border-color: #007bff;
+}
 #calendar {
     max-width: 1100px;
     margin: 0 auto 40px;
@@ -549,31 +595,9 @@ h2 {
 
 
 /* ホーム画面 */
-.cars a {
-    text-decoration: none;
-    display: block;
+.photo {
+	max-width: 100%;
 }
-
-.cars img {
-    width: 45%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.cars img:hover {
-    transform: scale(1.05);  /* ホバー時に拡大 */
-}
-.notice {
-        border: 2px solid #333;
-        border-radius: 8px;
-        padding: 20px;
-        background-color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        }
 /* ===== レスポンシブ対応 ===== */
 @media (max-width: 768px) {
     body {
@@ -610,21 +634,20 @@ h2 {
 
 @media (max-width: 480px) {
 .body {
-    	margin: 10px 5px;
+    	margin: 10px auto 0 auto;
         font-size: 12px;
     	padding:20px;
         margin-top:50px;
     }
 body {
-        margin: 10px 5px;
-        font-size: 16px;
-        
+        margin: 10px auto 0 auto;
+        background: #fafafa;
+        font-size: 16px;      
     }
-    
-
     #calendar {
         margin: 0 auto 20px;
         padding: 10px;
+        font-size: 11px;
     }
 
     #reserve_form {
@@ -677,3 +700,12 @@ body {
         width: 100%;
     }
 }
+.notice {
+        border: 2px solid #333;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        }
