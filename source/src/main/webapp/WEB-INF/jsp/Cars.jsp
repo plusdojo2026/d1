@@ -7,51 +7,46 @@
 <meta charset="UTF-8">
 <title>車種別</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/cars.css">
 <link rel="stylesheet" href="css/style.css">
+<title>車種別</title>
 </head>
-<header>
-<div class="hamburger-menu">
-        <input type="checkbox" id="menu-btn-check">
-        <label for="menu-btn-check" class="menu-btn"><span></span></label>
-        <!--ここからメニュー-->
-        <div class="menu-content">
-            <ul>
-                <li>
-                    <p>メニュー</p>
-                </li>
-                <li>
-                    <a href="/d1/ReserveServlet">📅予約</a>
-                </li>                
-                <li>
-                    <a href="/d1/GasolineServlet">🔥ガソリン</a>
-                </li>
-                <li>
-                    <a href="/d1/TodoServlet">✅TO DO</a>
-                </li>
-                <li>
-                    <a href="/d1/StartendServlet">▶️開始/終了</a>
-                </li>
-                <li>
-                    <a href="/d1/LoginServlet">🔚ログアウト</a>
-                </li>
-                <li>
-                    <a href="/d1/ContactServlet">❓お問い合わせ</a>
-                </li>                 
-            </ul>
-        </div>
-        <!--ここまでメニュー-->
-    </div>
-
-	<form id=carfrom method="get" action="/d1/CarServlet">
+<body>
+<header class="header">
+	<a href="${pageContext.request.contextPath}/HomeServlet"> <img
+		alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	</a>
+	<div class="hamburger-menu">
+		<input type="checkbox" id="menu-btn-check"> <label
+			for="menu-btn-check" class="menu-btn"><span></span></label>
+		<!--ここからメニュー-->
+		<div class="menu-content">
+			<ul>
+				<li>
+					<p>メニュー</p>
+				</li>
+				<li><a href="/d1/ReserveServlet">📅予約</a></li>
+				<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
+				<li><a href="/d1/TodoServlet">✅TO DO</a></li>
+				<li><a href="/d1/StartendServlet">▶️開始/終了</a></li>
+				<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
+				<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
+			</ul>
+		</div>
+		<!--ここまでメニュー-->
+	</div>
+</header>
+<body class="body">
+<form id=carfrom method="get" action="/d1/CarServlet">
 		<select class="ca" name="select" onchange="this.form.submit()">
 			<c:forEach var="ca" items="${carlist}">
 				<option value="${ca.carname}"
 					${select == ca.carname ? 'selected' : ''}>${ca.carname}</option>
 			</c:forEach>
 		</select>
+		<br><h2>${carCondition}</h2>
 	</form>
-</header>
-<body class="body">
+
 	<form method="GET" action="/d1/CarsServlet">
 		<img src="${pageContext.request.contextPath}/img/${carImage}"
 			alt="home写真" class="photo">

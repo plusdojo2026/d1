@@ -7,6 +7,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/home.css">
 <link rel="stylesheet" href="css/style.css">
 <title>SaleS</title>
 <style>
@@ -31,43 +33,49 @@
     border-radius: 8px;
     transition: transform 0.3s ease;
 }
+header img {
+	width: 120px;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.header {
+	background-color: #c0c0c0;
+	padding: 10px 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
 </style>
 </head>
 <body class="body">
 <header class="header">
+	<a href="${pageContext.request.contextPath}/HomeServlet"> <img
+		alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	</a>
 	<div class="hamburger-menu">
-        <input type="checkbox" id="menu-btn-check">
-        <label for="menu-btn-check" class="menu-btn"><span></span></label>
-        <!--ここからメニュー-->
-        <div class="menu-content">
-            <ul>
-                <li>
-                    <p>メニュー</p>
-                </li>
-                <li>
-                    <a href="/d1/ReserveServlet">📅予約</a>
-                </li>                
-                <li>
-                    <a href="/d1/GasolineServlet">🔥ガソリン</a>
-                </li>
-                <li>
-                    <a href="/d1/TodoServlet">✅TO DO</a>
-                </li>
-                <li>
-                    <a href="/d1/StartendServlet">▶️開始/終了</a>
-                </li>
-                <li>
-                    <a href="/d1/LoginServlet">🔚ログアウト</a>
-                </li>
-                <li>
-                    <a href="/d1/ContactServlet">❓お問い合わせ</a>
-                </li>                 
-            </ul>
-        </div>
-        <!--ここまでメニュー-->
-    </div>
+		<input type="checkbox" id="menu-btn-check"> <label
+			for="menu-btn-check" class="menu-btn"><span></span></label>
+		<!--ここからメニュー-->
+		<div class="menu-content">
+			<ul>
+				<li>
+					<p>メニュー</p>
+				</li>
+				<li><a href="/d1/ReserveServlet">📅予約</a></li>
+				<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
+				<li><a href="/d1/TodoServlet">✅TO DO</a></li>
+				<li><a href="/d1/StartendServlet">開始/終了</a></li>
+				<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
+				<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
+			</ul>
+		</div>
+		<!--ここまでメニュー-->
+	</div>
 </header>
-
 	<div class="notice">
 		<h2>お知らせ</h2>
 		${notice}

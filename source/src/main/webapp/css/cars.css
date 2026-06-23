@@ -1,0 +1,74 @@
+@charset "UTF-8";
+header img {
+	width: 120px;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.header {
+	background-color: #c0c0c0;
+	padding: 10px 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+/* 車種別画面 */
+.info-box {
+    background-color: #f8fafc;
+    border-left: 4px solid #7698d8;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #555;
+}
+.table-view {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+
+    border-collapse: collapse;
+    background: white;
+
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.history-row {
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;
+
+    border-collapse: collapse;
+    background: white;
+
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table-view th,
+.table-view td {
+    padding: 5px 26px;
+    border-bottom: 1px solid #eee;
+}
+
+.table-view th {
+    width: 40%;
+    text-align: left;
+    background: #f7f7f7;
+    color: black;
+    font-size: 18px;
+}
+
+.table-view td {
+    font-size: 16px;
+    color: black;
+}
+form img {
+	max-width: 100%;
+}

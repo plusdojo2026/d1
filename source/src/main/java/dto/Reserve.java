@@ -13,12 +13,20 @@ public class Reserve implements Serializable {
 	private String purpose;
 	private String username;
 	private String carname;
+	private String status;
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 //	public Reserve(int carid) {
 //		super();
 //		this.carid = carid;
 //	}
-	
+
 	public String getCarname() {
 		return carname;
 	}
@@ -31,8 +39,8 @@ public class Reserve implements Serializable {
 		super();
 		this.reservenumber = reservenumber;
 	}
-	
-	public Reserve(int carid,String carname) {
+
+	public Reserve(int carid, String carname) {
 		super();
 		this.carname = carname;
 		this.carid = carid;
@@ -55,8 +63,8 @@ public class Reserve implements Serializable {
 		this.purpose = purpose;
 	}
 
-	public Reserve(int reservenumber, LocalDateTime sdate, LocalDateTime fdate,
-			String purpose, String username,String userid) {
+	public Reserve(int reservenumber, LocalDateTime sdate, LocalDateTime fdate, String purpose, String username,
+			String userid) {
 		super();
 		this.reservenumber = reservenumber;
 		this.sdate = sdate;
@@ -65,6 +73,7 @@ public class Reserve implements Serializable {
 		this.username = username;
 		this.userid = userid;
 	}
+
 	public Reserve(int reservenumber, String userid, LocalDateTime sdate, LocalDateTime fdate, int carid,
 			LocalDateTime reservecreated, String purpose, String username) {
 
@@ -77,8 +86,10 @@ public class Reserve implements Serializable {
 		this.purpose = purpose;
 		this.username = username;
 	}
+
 	public Reserve() {
 	}
+
 	public int getReservenumber() {
 		return reservenumber;
 	}

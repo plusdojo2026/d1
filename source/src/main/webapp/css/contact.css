@@ -1,0 +1,74 @@
+@charset "UTF-8";
+header img {
+	width: 120px;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.header {
+	background-color: #c0c0c0;
+	padding: 10px 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+/* お問い合わせ画面 */
+p,li, td {
+    line-height: 1.7; 
+    font-size: 18px;
+}
+#contact {
+	margin-top: 50px;
+}
+.contact {
+	text-align: center;
+}
+#contact input[type="text"] {
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+    width: 90%;
+    font-size: 1rem;
+}
+#contact textarea {
+	display: block;
+    margin: 0 auto;
+    padding: 30px;
+    width: 90%;
+    font-size: 1rem;
+}
+
+.contact-btn {
+	text-align: center;
+	display: block;
+	margin: 0 auto;
+}
+#contact input[type="submit"],
+#contact input[type="reset"]  {
+	padding:10px;
+	width: 45%;
+	border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.contact-btn input[type="submit"] {
+	background-color: #28a745;
+    color: white;
+    border: none;
+}
+.contact-btn input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+.contact-btn input[type="reset"] {
+	border: none;
+}
+.contact-btn input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}

@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -36,7 +37,7 @@ public class StartendServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("carid=" + request.getParameter("carid"));
+
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
 		HttpSession session = request.getSession();
 		if (session.getAttribute("userid") == null) {
@@ -44,23 +45,43 @@ public class StartendServlet extends HttpServlet {
 			return;
 		}
 		
-		int carid = Integer.parseInt(request.getParameter("carid"));
+		String userid = (String) session.getAttribute("userid");
 
-		String userid = (String) request.getSession().getAttribute("userid");
-
-		ReserveDAO dao = new ReserveDAO();
-		TodoDAO dao1 = new TodoDAO();
-		boolean hasTodo = dao1.hasTodo(carid, userid);
-
+		TodoDAO todoDao = new TodoDAO();
+		boolean hasTodo = todoDao.hasTodo(userid);
 		request.setAttribute("hasTodo", hasTodo);
-		request.setAttribute("carid", carid);
-		List<Reserve> reservelist = dao.reserveAll(userid);
-		request.setAttribute("reservelist", reservelist);
 
-		List<Reserve> reservelists = dao.reserveAlls(userid, carid);
-		List<Reserve> top1 = reservelists.size() > 0 ? reservelists.subList(0, 1) : reservelists;
-		request.setAttribute("top1", top1);
-		System.out.println("carid=" + carid);
+		ReserveDAO reserveDao = new ReserveDAO();
+
+		List<Reserve> reservelist = reserveDao.reserveAll(userid);
+		request.setAttribute("reservelist", reservelist);
+		// 追加
+		boolean hasReserve = !reservelist.isEmpty();
+		request.setAttribute("hasReserve", hasReserve);
+		boolean canStart = false;
+		boolean canEnd = false;
+		boolean showQR = false;
+		LocalDateTime now = LocalDateTime.now();
+		if (!reservelist.isEmpty()) {
+
+			Reserve reserve = reservelist.get(0);
+
+			if ("予約中".equals(reserve.getStatus()) && !now.isBefore(reserve.getSdate())
+					&& now.isBefore(reserve.getFdate())) {
+				canStart = true;
+			}
+
+			if ("利用中".equals(reserve.getStatus()) && hasTodo) {
+				canEnd = true;
+			}
+			if ("利用終了".equals(reserve.getStatus())) {
+		        showQR = true;
+		    }
+		}
+		request.setAttribute("showQR", showQR);
+		request.setAttribute("canStart", canStart);
+		request.setAttribute("canEnd", canEnd);
+		
 		System.out.println("userid=" + userid);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
 		dispatcher.forward(request, response);
@@ -73,8 +94,23 @@ public class StartendServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+
+		String action = request.getParameter("action");
+
+		int reservenumber = Integer.parseInt(request.getParameter("reservenumber"));
+
+		ReserveDAO dao = new ReserveDAO();
+
+		if ("start".equals(action)) {
+
+			dao.updateStatus(reservenumber, "利用中");
+
+		} else if ("end".equals(action)) {
+
+			dao.updateStatus(reservenumber, "利用終了");
+		}
+
+		response.sendRedirect(request.getContextPath() + "/StartendServlet");
 	}
 
 }

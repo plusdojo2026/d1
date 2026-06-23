@@ -29,16 +29,14 @@ public class ReserveServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		 //もしもログインしていなかったらログインサーブレットにリダイレクトする
+		// もしもログインしていなかったらログインサーブレットにリダイレクトする
 		HttpSession session = request.getSession();
 		if (session.getAttribute("userid") == null) {
 			response.sendRedirect("/d1/LoginServlet");
 			return;
 		}
-		
 
-		String select = request.getParameter("select");//車種別からの遷移時にcarnameもらう
-
+		String select = request.getParameter("select");// 車種別からの遷移時にcarnameもらう
 
 		ReserveDAO dao = new ReserveDAO();
 
@@ -47,7 +45,7 @@ public class ReserveServlet extends HttpServlet {
 
 		// select が null または空ならデフォルト値を設定
 		if (select == null || select.isEmpty()) {
-		    select = "プリウス";
+			select = "プリウス";
 		}
 
 		// 選択された車種で検索
@@ -57,8 +55,7 @@ public class ReserveServlet extends HttpServlet {
 		request.setAttribute("select", select);
 
 		// JSP へフォワード
-		RequestDispatcher dispatcher =
-		    request.getRequestDispatcher("/WEB-INF/jsp/reserve.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/reserve.jsp");
 		dispatcher.forward(request, response);
 
 	}
@@ -75,56 +72,97 @@ public class ReserveServlet extends HttpServlet {
 		String select = request.getParameter("select");
 
 		if (select == null || select.isEmpty()) {
-		    select = "プリウス";  // 初期値
+			select = "プリウス"; // 初期値
 		}
 
 		String purpose = request.getParameter("purpose");
 		LocalDateTime sdate = null;
 		String sdateStr = request.getParameter("sdate");
 		if (sdateStr != null && !sdateStr.isEmpty()) {
-		    sdate = LocalDateTime.parse(sdateStr);
+			sdate = LocalDateTime.parse(sdateStr);
 		}
 		LocalDateTime fdate = null;
 		String fdateStr = request.getParameter("fdate");
 		if (fdateStr != null && !fdateStr.isEmpty()) {
-		    fdate = LocalDateTime.parse(fdateStr);
+			fdate = LocalDateTime.parse(fdateStr);
 		}
-	    
-	    String noStr = request.getParameter("reservenumber");
-	    int reservenumber = -1;
-	    if (noStr != null && noStr.matches("\\d+")) {
-	        reservenumber = Integer.parseInt(noStr);
-	    }
-		
+
+		String noStr = request.getParameter("reservenumber");
+		int reservenumber = -1;
+		if (noStr != null && noStr.matches("\\d+")) {
+			reservenumber = Integer.parseInt(noStr);
+		}
+
 		ReserveDAO dao = new ReserveDAO();
 		int carid = dao.findCarid(select);
 
-		
+//		// 同じ車両の重複予約チェック
+//		if ("登録".equals(request.getParameter("regist"))) {
+//
+//			if (dao.existsCarReserve(carid, sdate, fdate)) {
+//
+//				request.setAttribute("result", new Result("登録失敗！", "その車両は既に予約されています。", "/d1/ReserveServlet"));
+//
+//				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result.jsp");
+//
+//				dispatcher.forward(request, response);
+//				return;
+//			}
+//		}
+
 		if ("登録".equals(request.getParameter("regist"))) {
-			if (dao.insert(new Reserve(userid,sdate,fdate,carid,purpose))) { // 登録成功
+
+			// 同じ車の重複チェック
+			if (dao.existsCarReserve(carid, sdate, fdate)) {
+
+				request.setAttribute("result", new Result("登録失敗！", "その車両は既に予約されています。", "/d1/ReserveServlet"));
+
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
+
+			// 同じユーザーの時間重複チェック
+			if (dao.existsUserReserve(userid, sdate, fdate)) {
+
+				request.setAttribute("result", new Result("登録失敗！", "同じ時間帯に既に予約があります。", "/d1/ReserveServlet"));
+
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
+
+			// 登録処理
+			if (dao.insert(new Reserve(userid, sdate, fdate, carid, purpose))) {
+
 				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "/d1/HomeServlet"));
-			} else { // 登録失敗
+
+			} else {
+
 				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/d1/HomeServlet"));
 			}
+
 		} else if ("更新".equals(request.getParameter("submit"))) {
 
-		    if (dao.update(new Reserve(reservenumber,sdate,fdate,purpose))){
-		        // 既存予約の場合のみ UPDATE
-		        request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/HomeServlet"));
-			} else { // 更新失敗
+			if (dao.update(new Reserve(reservenumber, sdate, fdate, purpose))) {
+
+				request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/HomeServlet"));
+
+			} else {
+
 				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/HomeServlet"));
 			}
-		} else if("削除".equals(request.getParameter("submit"))){
-			if (dao.delete(reservenumber)) { // 削除成功
+
+		} else if ("削除".equals(request.getParameter("submit"))) {
+
+			if (dao.delete(reservenumber)) {
+
 				request.setAttribute("result", new Result("削除成功！", "レコードを削除しました。", "/d1/HomeServlet"));
-			} else { // 削除失敗
+
+			} else {
+
 				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/HomeServlet"));
 			}
 		}
-		
-	
-		
-		// 結果ページにフォワードする
+
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/result.jsp");
 		dispatcher.forward(request, response);
 	}

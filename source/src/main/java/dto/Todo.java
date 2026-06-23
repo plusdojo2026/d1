@@ -132,4 +132,6 @@ public class Todo implements Serializable {
 	public void setEquipmentcheck(boolean equipmentcheck) {
 		this.equipmentcheck = equipmentcheck;
 	}
+
+	
 }

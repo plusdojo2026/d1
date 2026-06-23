@@ -4,34 +4,29 @@
 
 <!DOCTYPE html>
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/style.css">
 <head>
 <meta charset='utf-8' />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
-<header>
-	<img alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
-	<div class="hamburger-menu">
-		<input type="checkbox" id="menu-btn-check"> <label
-			for="menu-btn-check" class="menu-btn"></label>
-		<!--ここからメニュー-->
-		<div class="menu-content">
-			<ul>
-				<li>
-					<p>メニュー</p>
-				</li>
-				<li><a href="/d1/ReserveServlet">📅予約</a></li>
-				<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
-				<li><a href="/d1/TodoServlet">✅TO DO</a></li>
-				<li><a href="/d1/StartendServlet">開始/終了</a></li>
-				<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
-				<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
-			</ul>
-		</div>
-		<!--ここまでメニュー-->
-	</div>
-</header>
+<link rel="stylesheet" href="css/reserve.css">
+<style>
+/* 月表示（DayGrid）の各セルのパディングを調整 */
+.fc .fc-daygrid-day-frame {
+  padding: 0 !important; /* 内側の余白をリセット */
+}
+
+/* 日付テキスト自体の余白を調整 */
+.fc .fc-daygrid-day-top {
+  padding: 0 !important;
+}
+
+/* タイムグリッド（TimeGrid）のセルのマージンを詰める場合 */
+.fc .fc-timegrid-slot,
+.fc .fc-timegrid-col {
+  padding: 0 !important;
+}
+
+</style>
 <script
 	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
 <script
@@ -41,6 +36,7 @@
 
 function closeModal() {
 	  document.getElementById("editModal").style.display = "none";
+	  document.getElementById("viewModal").style.display = "none";
 	}
 
 function formatDate(str) {
@@ -73,7 +69,13 @@ const events = [
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
+    	initialView: 'dayGridMonth',
+    	  aspectRatio: 0.3, // デフォルトは 1.35。小さくすると縦幅が縮まります	
+      height: 300, // カレンダーの高さを600pxに固定  
       locale:'ja',
+  	  dayCellContent: function(arg){
+		return arg.date.getDate();
+	},
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
@@ -85,13 +87,22 @@ const events = [
 
     	        	    console.log("クリックされたユーザーID:", eventOwnerId);
 
-    	      	    if (eventOwnerId !== currentUserId) {
-    	      	      return; }
+
+    	  // 他人の予定 → 閲覧モーダル
+    	  if (eventOwnerId !== currentUserId) {
+        	  document.getElementById("viewNo").value = info.event.extendedProps.no;
+        	  document.getElementById("viewsedit").value = formatDate(info.event.startStr);
+        	  document.getElementById("viewfedit").value = formatDate(info.event.endStr);
+        	  document.getElementById("viewpedit").value = info.event.title;
+    	    document.getElementById("viewModal").style.display = "block";
+    	    return;
+    	  }
+
+    	  // 自分の予定 → 編集モーダル
     	  document.getElementById("editNo").value = info.event.extendedProps.no;
     	  document.getElementById("sedit").value = formatDate(info.event.startStr);
     	  document.getElementById("fedit").value = formatDate(info.event.endStr);
     	  document.getElementById("pedit").value = info.event.title;
-
     	  document.getElementById("editModal").style.display = "block";
 
     	},
@@ -101,7 +112,7 @@ const events = [
 
     	    // カレンダー上の表示をカスタム
     	    info.el.querySelector('.fc-event-title').innerHTML =
-    	        info.event.title + '<br><span style="font-size:12px; color:#555;">' + username + '</span>';
+    	        info.event.title + '<br><span style="font-size:5px; color:#555;">' + username + '</span>';
     	},
       events: events
     });
@@ -125,6 +136,7 @@ startInput.addEventListener('change', function () {
 </head>
 <body class="body">
 	<header>
+	<img alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
 		<div class="hamburger-menu">
 			<input type="checkbox" id="menu-btn-check"> <label
 				for="menu-btn-check" class="menu-btn"><span></span></label>
@@ -144,6 +156,7 @@ startInput.addEventListener('change', function () {
 			</div>
 			<!--ここまでメニュー-->
 		</div>
+	</header>
 		<form id=carfrom method="get" action="/d1/ReserveServlet">
 			<select class="ca" name="select" onchange="this.form.submit()">
 				<c:forEach var="ca" items="${carlist}">
@@ -152,7 +165,6 @@ startInput.addEventListener('change', function () {
 				</c:forEach>
 			</select>
 		</form>
-	</header>
 	<div id='calendar'></div>
 
 	<form id="reserve_form" method="POST" action="/d1/ReserveServlet">
@@ -214,6 +226,35 @@ startInput.addEventListener('change', function () {
 			<div class="button-group">
 				<input type="submit" name="submit" value="更新"> <input
 					type="submit" name="submit" value="削除">
+				<button type="button" onclick="closeModal()">閉じる</button>
+			</div>
+		</form>
+	</div>
+	
+	<!-- 表示モーダル -->
+		<div id="viewModal">
+		<h3>予約内容</h3>
+		<span id="editError" class="error"></span>
+		<form id="edit_form" method="POST" action="/d1/ReserveServlet">
+			<div class="form-row">
+				<!--<label>番号</label>-->
+				<input type="hidden" id="viewNo" name="reservenumber">
+			</div>
+
+			<div class="form-row">
+				<label>開始日時</label> <input type="datetime-local" id="viewsedit"
+					name="sdate">
+			</div>
+
+			<div class="form-row">
+				<label>終了日時</label> <input type="datetime-local" id="viewfedit"
+					name="fdate">
+			</div>
+
+			<div class="form-row">
+				<label>目的</label> <input type="text" id="viewpedit" name="purpose">
+			</div>
+			<div class="button-group">
 				<button type="button" onclick="closeModal()">閉じる</button>
 			</div>
 		</form>

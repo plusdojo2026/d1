@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="css/style.css">
 <title>車管理アプリ</title>
 </head>
-<body>
+<body class="body">
 	<div class="background-opacity-container">
 	<div id="login-box">
 	<form id="login" method="POST" action="/d1/LoginServlet">

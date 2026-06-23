@@ -31,12 +31,7 @@
 	</div>
 </header>
 
-<style>
-/* 初期状態は文字列を非表示にする */
-#finish {
-	display: none;
-}
-</style>
+
 
 <title>Insert title here</title>
 
@@ -46,11 +41,11 @@
 	<p id="realtime"></p>
 	<br>
 
-	<c:forEach var="top1" items="${top1}">
-		<p id="finish">終了日時：${top1.fdate.toString().substring(5, 16).replace('T', ' ')}</p>
-
-
-		<br>
+	<c:forEach var="syo" items="${reservelist}">
+		<c:if test="${syo.status == '利用中'}">
+			<p class="finish">終了予定時刻：
+				${syo.fdate.toString().substring(5,16).replace('T',' ')}</p>
+		</c:if>
 	</c:forEach>
 	<br>
 
@@ -61,18 +56,47 @@
   目的${syo.purpose}<br>
 	</c:forEach>
 
-	<button onclick="showText()" ${hasReserve ? '' : 'disabled'}>
-		開始</button>
-	<button type="submit" ${hasTodo ? '' : 'disabled'}>終了</button>
-	<c:if test="${empty reservelist}">
+	<c:if test="${hasReserve}">
+
+		<form action="/d1/StartendServlet" method="post">
+			<input type="hidden" name="action" value="start">
+
+			<c:forEach var="reserve" items="${reservelist}" begin="0" end="0">
+				<input type="hidden" name="reservenumber"
+					value="${reserve.reservenumber}">
+			</c:forEach>
+
+			<button type="submit" ${canStart ? '' : 'disabled'}>開始</button>
+		</form>
+
+		<form action="/d1/StartendServlet" method="post">
+			<input type="hidden" name="action" value="end">
+
+			<c:forEach var="reserve" items="${reservelist}" begin="0" end="0">
+				<input type="hidden" name="reservenumber"
+					value="${reserve.reservenumber}">
+			</c:forEach>
+
+			<button type="submit" ${canEnd ? '' : 'disabled'}>終了</button>
+		</form>
+
+
+		<c:if test="${showQR}">
+			<div id="qrArea">
+				<h3>返却確認</h3>
+				<img src="${pageContext.request.contextPath}/img/QR.png" alt="QRコード"
+					width="300">
+			</div>
+		</c:if>
+	</c:if>
+
+	<c:if test="${!hasReserve}">
 		<p style="color: red;">予約していません</p>
 	</c:if>
 	<script>
-		function showText() {
-
-			document.getElementById("finish").style.display = "block";
+		function showQR() {
+			document.getElementById("qrArea").style.display = "block";
 		}
-
 		function showClock() {
 			let nowTime = new Date();
 			let nowHour = nowTime.getHours();
