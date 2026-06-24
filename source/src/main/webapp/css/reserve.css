@@ -15,158 +15,385 @@ header img {
 	justify-content: center;
 	position: relative;
 }
-/* カレンダー全体の文字サイズを変更（デフォルト: 1em） */
+/* お問い合わせ画面 */
+p, li, td {
+	line-height: 1.7;
+	font-size: 18px;
+}
+
+#contact {
+	margin-top: 50px;
+}
+
+.contact {
+	text-align: center;
+}
+
+#contact input[type="text"] {
+	display: block;
+	margin: 0 auto;
+	padding: 5px;
+	width: 90%;
+	font-size: 1rem;
+}
+
+#contact textarea {
+	display: block;
+	margin: 0 auto;
+	padding: 30px;
+	width: 90%;
+	font-size: 1rem;
+}
+
+.contact-btn {
+	text-align: center;
+	display: block;
+	margin: 0 auto;
+}
+
+#contact input[type="submit"], #contact input[type="reset"] {
+	padding: 10px;
+	width: 45%;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: all 0.3s ease;
+}
+
+.contact-btn input[type="submit"] {
+	background-color: #28a745;
+	color: white;
+	border: none;
+}
+
+.contact-btn input[type="submit"]:hover {
+	background-color: #0056b3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+
+.contact-btn input[type="reset"] {
+	border: none;
+}
+
+.contact-btn input[type="submit"]:hover {
+	background-color: #0056b3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+/* 予約画面 */
+.ca {
+	padding: 10px 15px;
+	font-size: 13px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background-color: white;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+.ca:hover {
+	border-color: #007bff;
+}
+
+#calendar {
+	max-width: 1100px;
+	margin: 0 auto 40px;
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+/* ===== 予約登録フォーム ===== */
+#reserve_form {
+	max-width: 1100px;
+	margin: 0 auto 40px;
+	background-color: white;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+/* ===== 開始日・終了日・目的を横並び ===== */
+.form-row-group {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.form-group {
+	flex: 1;
+	min-width: 200px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.form-group label {
+	font-weight: bold;
+	font-size: 16px;
+	color: #333;
+}
+
+.form-group input[type="datetime-local"], .form-group input[type="text"]
+	{
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.form-group input[type="datetime-local"]:focus, .form-group input[type="text"]:focus
+	{
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* ===== ボタン（右寄せ） ===== */
+.form-buttons {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding-top: 20px;
+	border-top: 1px solid #eee;
+}
+
+.form-buttons input[type="submit"], .form-buttons input[type="reset"] {
+	padding: 12px 30px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: all 0.3s ease;
+}
+
+.form-buttons input[type="submit"] {
+	background-color: #007bff;
+	color: white;
+}
+
+.form-buttons input[type="submit"]:hover {
+	background-color: #0056b3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+
+.form-buttons input[type="reset"] {
+	background-color: #6c757d;
+	color: white;
+}
+
+.form-buttons input[type="reset"]:hover {
+	background-color: #5a6268;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+
+/* ===== ボタン（右寄せ） ===== */
+.form-buttons {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding-top: 20px;
+	border-top: 1px solid #eee;
+	flex-wrap: wrap;
+}
+
+.form-buttons input[type="submit"], .form-buttons input[type="reset"],
+	.form-buttons button {
+	padding: 12px 30px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: all 0.3s ease;
+}
+
+.form-buttons input[type="submit"] {
+	background-color: #28a745;
+	color: white;
+}
+
+.form-buttons input[type="submit"]:hover {
+	background-color: #28a745;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+}
+
+.form-buttons input[type="reset"] {
+	background-color: #6c757d;
+	color: white;
+}
+
+.form-buttons input[type="reset"]:hover {
+	background-color: #5a6268;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+
+.form-buttons .edit-btn {
+	background-color: #17a2b8;
+	color: white;
+}
+
+.form-buttons .edit-btn:hover {
+	background-color: #138496;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(19, 132, 150, 0.3);
+}
+
+#error {
+	color: red;
+}
+/* ===== 編集モーダル ===== */
+#editModal, #viewModal {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: white;
+	padding: 30px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+	max-width: 500px;
+	width: 90%;
+}
+
+#editModal h3, #viewModal h3 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 20px;
+	color: #333;
+}
+
+#editModal form, #viewModal form {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#editModal .form-row, #viewModal .form-row {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+#editModal .form-row label, #viewModal .form-row label {
+	font-weight: bold;
+	font-size: 14px;
+	color: #333;
+}
+
+#editModal input[type="text"], #editModal input[type="datetime-local"],
+	#viewModal input[type="text"], #viewModal input[type="datetime-local"]
+	{
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	width: 100%;
+}
+
+#editModal .button-group, #viewModal .button-group {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #eee;
+}
+
+#editModal input[type="submit"], #viewModal input[type="submit"] {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: all 0.3s ease;
+	font-size: 14px;
+}
+
+#editModal input[type="submit"][value="更新"] {
+	background-color: #28a745;
+	color: white;
+}
+
+#editModal input[type="submit"][value="更新"]:hover {
+	background-color: #218838;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(33, 136, 56, 0.3);
+}
+
+#editModal input[type="submit"][value="削除"] {
+	background-color: #dc3545;
+	color: white;
+}
+
+#editModal input[type="submit"][value="削除"]:hover {
+	background-color: #c82333;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
+}
+
+#editModal button, #viewModal button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	background-color: #6c757d;
+	color: white;
+}
+
+#editModal button:hover, #viewModal button:hover {
+	background-color: #5a6268;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
+}
+
 /* イベントタイトルの文字サイズ */
 .fc-daygrid-event {
-  padding: 0px 0px;      /* 余白を小さくする */
-  font-size: 6px;       /* 文字サイズを小さくする */
-  line-height: 1.1;      /* 行間を詰める */
+	padding: 0px 0px;
+	font-size: 6px;
+	line-height: 1.1;
 }
+
 .fc-daygrid-day-frame {
-  min-height: 20px !important; /* デフォルトは約 100px */
+	min-height: 20px !important;
 }
-:root {
-  /* デフォルトは 8px や 10px 程度です。お好みのサイズに変更してください */
-  --fc-daygrid-event-dot-width: 5px; 
+
+:root { 
+    --fc-daygrid-event-dot-width: 5px;
 }
+
 .fc-daygrid-day-frame {
-  padding: 2px !important; /* デフォルトは 8px 前後 */
+	padding: 2px !important;
 }
-.fc-daygrid-event-dot,
-.fc-event-dot {
-  margin-left: 0px !important;
-  display: inline-block;
-  vertical-align: middle;
+
+.fc-daygrid-event-dot, .fc-event-dot {
+	margin-left: 0px !important;
+	display: inline-block;
+	vertical-align: middle;
 }
+
 .fc .fc-daygrid-day-frame {
-  padding: 0px !important; /* 好みのサイズに変更 */
+	padding: 0px !important;
 }
+
 .fc-event {
-  margin: 0 !important;
-  padding: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
-#viewModal.show::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-
-#viewModal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    max-width: 500px;
-    width: 90%;
-}
-
-#viewModal.show {
-    display: black;
-}
-
-#viewModal h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 20px;
-    color: #333;
-}
-
-#viewModal form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;    
-}
-
-#viewModal .form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-#viewModal .form-row label {
-    font-weight: bold;
-    font-size: 14px;
-    color: #333;
-}
-
-#viewModal input[type="text"],
-#viewModal input[type="datetime-local"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-}
-
-#viewModal input[type="text"]:focus,
-#viewModal input[type="datetime-local"]:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-#viewModal .button-group {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-#viewModal input[type="submit"],
-#viewModal button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-#viewModal input[type="submit"][value="更新"] {
-    background-color: #28a745;
-    color: white;
-}
-
-#viewModal input[type="submit"][value="更新"]:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(33, 136, 56, 0.3);
-}
-
-#viewModal input[type="submit"][value="削除"] {
-    background-color: #dc3545;
-    color: white;
-}
-
-#viewModal input[type="submit"][value="削除"]:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(200, 35, 51, 0.3);
-}
-
-#viewModal button {
-    background-color: #6c757d;
-    color: white;
-}
-
-#viewModal button:hover {
-    background-color: #5a6268;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(90, 98, 104, 0.3);
-}
-

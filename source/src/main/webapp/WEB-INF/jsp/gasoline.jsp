@@ -25,7 +25,7 @@
 				<li><a href="/d1/ReserveServlet">📅予約</a></li>
 				<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
 				<li><a href="/d1/TodoServlet">✅TO DO</a></li>
-				<li><a href="/d1/StartendServlet">開始/終了</a></li>
+				<li><a href="/d1/StartendServlet">▶️開始/終了</a></li>
 				<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
 				<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
 			</ul>
@@ -35,7 +35,7 @@
 </header>
 <title>ガソリン価格比較</title>
 </head>
-<body>
+<body class="body">
 
 
 

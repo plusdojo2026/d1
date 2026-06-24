@@ -13,19 +13,36 @@ public class Reserve implements Serializable {
 	private String purpose;
 	private String username;
 	private String carname;
-	private String status;
+	private int statusid;
 
-	public String getStatus() {
-		return status;
-	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
 //	public Reserve(int carid) {
 //		super();
 //		this.carid = carid;
 //	}
+	@Override
+	public String toString() {
+	    return "Reserve{" +
+	            "reservenumber=" + reservenumber +
+
+	            ", fdate=" + fdate +
+	            '}';
+	}
+
+
+	public int getStatusid() {
+		return statusid;
+	}
+
+	public Reserve(int reservenumber, LocalDateTime fdate) {
+		super();
+		this.reservenumber = reservenumber;
+		this.fdate = fdate;
+	}
+
+	public void setStatusid(int statusid) {
+		this.statusid = statusid;
+	}
 
 	public String getCarname() {
 		return carname;

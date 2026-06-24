@@ -135,8 +135,10 @@ startInput.addEventListener('change', function () {
 </script>
 </head>
 <body class="body">
-	<header>
-	<img alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	<header class="header">
+	<a href="${pageContext.request.contextPath}/HomeServlet"> <img
+		alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	</a>
 		<div class="hamburger-menu">
 			<input type="checkbox" id="menu-btn-check"> <label
 				for="menu-btn-check" class="menu-btn"><span></span></label>
@@ -149,7 +151,7 @@ startInput.addEventListener('change', function () {
 					<li><a href="/d1/ReserveServlet">📅予約</a></li>
 					<li><a href="/d1/GasolineServlet">🔥ガソリン</a></li>
 					<li><a href="/d1/TodoServlet">✅TO DO</a></li>
-					<li><a href="/d1/StartendServlet">開始/終了</a></li>
+					<li><a href="/d1/StartendServlet">▶️開始/終了</a></li>
 					<li><a href="/d1/LoginServlet">🔚ログアウト</a></li>
 					<li><a href="/d1/ContactServlet">❓お問い合わせ</a></li>
 				</ul>

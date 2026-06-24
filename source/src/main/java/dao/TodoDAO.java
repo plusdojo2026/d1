@@ -28,10 +28,9 @@ public class TodoDAO {
 					INSERT INTO Todo
 							(carid, outsidephoto, outsidememo, smell,
 							 insideitemmemo, gasolineamount, lostitem,
-							 lostitemmemo, userid)
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-							""";
-
+							 lostitemmemo, equipmentcheck, userid)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					""";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -43,7 +42,10 @@ public class TodoDAO {
 			pStmt.setString(6, card.getGasolineamount());
 			pStmt.setBoolean(7, card.isLostitem());
 			pStmt.setString(8, card.getLostitemmemo());
-			pStmt.setString(9, card.getUserid());
+
+			pStmt.setBoolean(9, card.isEquipmentcheck());
+
+			pStmt.setString(10, card.getUserid());
 
 			// SQL文を実行する
 			if (pStmt.executeUpdate() == 1) {
@@ -67,7 +69,7 @@ public class TodoDAO {
 		return result;
 	}
 
-	public boolean hasTodo(int carid,String userid) {
+	public boolean hasTodo(String userid) {
 		Connection conn = null;
 		boolean exists = false;
 
@@ -78,12 +80,11 @@ public class TodoDAO {
 					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
 					"password");
 
-			String sql = "SELECT COUNT(*) FROM Todo WHERE carid = ? AND userid = ?";
+			String sql = "SELECT COUNT(*) FROM Todo WHERE userid = ?";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-			pStmt.setInt(1, carid);
-			pStmt.setString(2, userid);
+			pStmt.setString(1, userid);
 
 			ResultSet rs = pStmt.executeQuery();
 

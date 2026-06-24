@@ -80,12 +80,12 @@ public class ReserveDAO {
 			// SQL文を準備する
 //				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
 
-			String sql = "SELECT Idpw.userid,Idpw.username,Reserve.carid,reservenumber , sdate, fdate,purpose "
-					+ "FROM Reserve INNER JOIN Idpw ON Reserve.userid = Idpw.userid "
-					+ "LEFT JOIN Cars ON Reserve.carid = Cars.carid " + "WHERE carname LIKE ? "
+			String sql = "SELECT idpw.userid,idpw.username,reserve.carid,reservenumber , sdate, fdate,purpose "
+					+ "FROM reserve INNER JOIN idpw ON reserve.userid = idpw.userid "
+					+ "LEFT JOIN cars ON reserve.carid = cars.carid " + "WHERE carname LIKE ? "
 					+ "AND fdate >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01') "
 					+ "AND fdate <  DATE_FORMAT(CURRENT_DATE + INTERVAL 2 MONTH, '%Y-%m-01') "
-					+ "ORDER BY Reserve.reservecreated desc";
+					+ "ORDER BY reserve.reservecreated desc";
 			pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -127,7 +127,7 @@ public class ReserveDAO {
 			// SQL文を準備する
 //				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
 
-			String sql = "SELECT DISTINCT carid,carname " + "FROM Cars";
+			String sql = "SELECT DISTINCT carid,carname " + "FROM cars";
 			pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -152,7 +152,7 @@ public class ReserveDAO {
 
 	public int findCarid(String carname) {
 
-		String sql = "SELECT carid " + "FROM Cars " + "WHERE carname LIKE ? ";
+		String sql = "SELECT carid " + "FROM cars " + "WHERE carname LIKE ? ";
 
 		try (Connection conn = getConnection(); PreparedStatement pStmt = conn.prepareStatement(sql)) {
 
@@ -182,7 +182,7 @@ public class ReserveDAO {
 			// SQL文を準備する
 //				String sql = "SELECT * FROM reserve INNER JOIN IdPw ON reserve.userid = IdPw.userid WHERE carid LIKE ? AND Companies.company LIKE ? ORDER BY Bc_number";
 
-			String sql = "UPDATE Reserve SET sdate=?, fdate=?, purpose=? " + "WHERE reservenumber =? ";
+			String sql = "UPDATE reserve SET sdate=?, fdate=?, purpose=? " + "WHERE reservenumber =? ";
 			pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -204,32 +204,72 @@ public class ReserveDAO {
 		return result;
 	}
 
-	public boolean updateStatus(int reservenumber, String status) {
+	public boolean updateStatus(int reservenumber) {
 
-		Connection conn = getConnection();
-		PreparedStatement pStmt = null;
+		Connection conn = null;
+		boolean result = false;
 
 		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			String sql = "UPDATE Reserve " + "SET status=? " + "WHERE reservenumber=?";
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
+					"password");
 
-			pStmt = conn.prepareStatement(sql);
+			String sql = "UPDATE reserve SET statusid = 2 WHERE reservenumber=?";
 
-			pStmt.setString(1, status);
-			pStmt.setInt(2, reservenumber);
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, reservenumber);
 
 			return pStmt.executeUpdate() == 1;
 
-		} catch (SQLException e) {
-
+		} catch (Exception e) {
 			e.printStackTrace();
-
 		} finally {
-
-			closeAll(conn, null, pStmt);
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+				}
+			}
 		}
 
-		return false;
+		return result;
+	}
+	
+	public boolean updateStatus1(int reservenumber) {
+
+		Connection conn = null;
+		boolean result = false;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
+					"password");
+
+			String sql = "UPDATE reserve SET statusid = 3 WHERE reservenumber=?";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, reservenumber);
+
+			return pStmt.executeUpdate() == 1;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		return result;
 	}
 
 	public boolean delete(int reservenumber) {
@@ -240,7 +280,7 @@ public class ReserveDAO {
 
 		try {
 			// SQL文を準備する
-			String sql = "DELETE FROM Reserve WHERE reservenumber =?";
+			String sql = "DELETE FROM reserve WHERE reservenumber =?";
 			pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -269,7 +309,7 @@ public class ReserveDAO {
 
 		try {
 
-			String sql = "SELECT COUNT(*) cnt " + "FROM Reserve " + "WHERE carid=? " + "AND sdate < ? "
+			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE carid=? " + "AND sdate < ? "
 					+ "AND fdate > ?";
 
 			pStmt = conn.prepareStatement(sql);
@@ -301,7 +341,7 @@ public class ReserveDAO {
 
 		try {
 
-			String sql = "SELECT COUNT(*) cnt " + "FROM Reserve " + "WHERE userid = ? " + "AND sdate < ? "
+			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE userid = ? " + "AND sdate < ? "
 					+ "AND fdate > ?";
 
 			pStmt = conn.prepareStatement(sql);
@@ -333,7 +373,7 @@ public class ReserveDAO {
 
 		try {
 			// SQL文を準備する
-			String sql = "INSERT INTO Reserve (userid,sdate,fdate,carid,purpose) " + "VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO reserve (userid,sdate,fdate,carid,purpose) " + "VALUES (?, ?, ?, ?, ?)";
 			pStmt = conn.prepareStatement(sql);
 
 			// SQL文を完成させる
@@ -384,8 +424,8 @@ public class ReserveDAO {
 		List<Reserve> reserveList = new ArrayList<>();
 
 		try {
-			String sql = "SELECT Reserve.sdate, Reserve.fdate, Cars.carname " + "FROM Reserve "
-					+ "INNER JOIN Cars ON Reserve.carid = Cars.carid";
+			String sql = "SELECT reserve.sdate, reserve.fdate, cars.carname " + "FROM reserve "
+					+ "INNER JOIN cars ON reserve.carid = cars.carid";
 			pStmt = conn.prepareStatement(sql);
 			rs = pStmt.executeQuery();
 
@@ -414,10 +454,11 @@ public class ReserveDAO {
 		List<Reserve> reserveList = new ArrayList<>();
 
 		try {
-			String sql = "SELECT Reserve.reservenumber, Reserve.sdate, Reserve.fdate, "
-					+ "Cars.carname, purpose, status " + "FROM Reserve "
-					+ "INNER JOIN Cars ON Reserve.carid = Cars.carid " + "WHERE userid = ? " + "AND NOW() <= fdate "
-					+ "ORDER BY sdate " + "LIMIT 1";
+			String sql = "SELECT reserve.reservenumber, reserve.sdate, reserve.fdate, "
+					+ "cars.carname, purpose " + "FROM reserve "
+					+ "INNER JOIN cars ON reserve.carid = cars.carid WHERE userid = ? " 
+					+"AND (reserve.statusid = 2 OR (sdate >= CURDATE() AND sdate <DATE_ADD(CURDATE(),INTERVAL 1 DAY))) "
+					+ "ORDER BY sdate " ;
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, userid);
 
@@ -431,8 +472,6 @@ public class ReserveDAO {
 				reserve.setCarname(rs.getString("carname"));
 				reserve.setPurpose(rs.getString("purpose"));
 				reserve.setReservenumber(rs.getInt("reservenumber"));
-
-				reserve.setStatus(rs.getString("status"));
 				reserveList.add(reserve);
 			}
 		} catch (SQLException e) {
@@ -451,8 +490,8 @@ public class ReserveDAO {
 		List<Reserve> reserveList = new ArrayList<>();
 
 		try {
-			String sql = "SELECT Reserve.fdate " + "FROM Reserve " + "INNER JOIN Cars ON Reserve.carid = Cars.carid "
-					+ "WHERE userid LIKE ? AND CURRENT_TIMESTAMP < fdate ORDER BY sdate LIMIT 1";
+			String sql = "SELECT reserve.reservenumber, reserve.fdate FROM reserve "
+					+ "WHERE userid LIKE ? AND statusid = 2  ORDER BY sdate desc LIMIT 1";
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, "%" + userid.trim() + "%");
 
@@ -460,6 +499,40 @@ public class ReserveDAO {
 
 			while (rs.next()) {
 				Reserve reserve = new Reserve();
+				reserve.setReservenumber(rs.getInt("reservenumber"));
+				System.out.println("RESERVE NUMBER:" + rs.getInt("reservenumber"));
+
+				reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
+
+				reserveList.add(reserve);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, rs, pStmt);
+		}
+
+		return reserveList;
+	}
+	
+	public List<Reserve> reserveAllk(String userid) {
+		Connection conn = getConnection();
+		ResultSet rs = null;
+		PreparedStatement pStmt = null;
+		List<Reserve> reserveList = new ArrayList<>();
+
+		try {
+			String sql = "SELECT reserve.reservenumber, reserve.fdate FROM reserve "
+					+ "WHERE userid LIKE ? AND  sdate >= NOW() - INTERVAL 1 hour "
+					+ "AND sdate <= NOW() + INTERVAL 1 hour AND statusid = 1 ORDER BY sdate LIMIT 1";
+			pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, "%" + userid.trim() + "%");
+
+			rs = pStmt.executeQuery();
+
+			while (rs.next()) {
+				Reserve reserve = new Reserve();
+				reserve.setReservenumber(rs.getInt("reservenumber"));
 
 				reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
 

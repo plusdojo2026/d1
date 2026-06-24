@@ -52,9 +52,18 @@ public class StartendServlet extends HttpServlet {
 		request.setAttribute("hasTodo", hasTodo);
 
 		ReserveDAO reserveDao = new ReserveDAO();
-
+		
+		
+		List<Reserve> starts = reserveDao.reserveAllk(userid);
+		request.setAttribute("starts", starts);
+		
+		List<Reserve> top1 = reserveDao.reserveAlls(userid);
+		request.setAttribute("top1", top1);
+		
 		List<Reserve> reservelist = reserveDao.reserveAll(userid);
 		request.setAttribute("reservelist", reservelist);
+		
+		
 		// 追加
 		boolean hasReserve = !reservelist.isEmpty();
 		request.setAttribute("hasReserve", hasReserve);
@@ -66,15 +75,15 @@ public class StartendServlet extends HttpServlet {
 
 			Reserve reserve = reservelist.get(0);
 
-			if ("予約中".equals(reserve.getStatus()) && !now.isBefore(reserve.getSdate())
+			if (reserve.getStatusid()==1 && !now.isBefore(reserve.getSdate())
 					&& now.isBefore(reserve.getFdate())) {
 				canStart = true;
 			}
 
-			if ("利用中".equals(reserve.getStatus()) && hasTodo) {
+			if (reserve.getStatusid()==2 && hasTodo) {
 				canEnd = true;
 			}
-			if ("利用終了".equals(reserve.getStatus())) {
+			if (reserve.getStatusid()==3 ){
 		        showQR = true;
 		    }
 		}
@@ -94,20 +103,28 @@ public class StartendServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		HttpSession session = request.getSession();
 		String action = request.getParameter("action");
+		String userid = (String) session.getAttribute("userid");
 
 		int reservenumber = Integer.parseInt(request.getParameter("reservenumber"));
 
 		ReserveDAO dao = new ReserveDAO();
 
+
 		if ("start".equals(action)) {
 
-			dao.updateStatus(reservenumber, "利用中");
+			dao.updateStatus(reservenumber);
+			List<Reserve> top1 = dao.reserveAlls(userid);
+			request.setAttribute("top1", top1);
+			List<Reserve> reservelist = dao.reserveAll(userid);
+			request.setAttribute("reservelist", reservelist);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
+			dispatcher.forward(request, response);
 
 		} else if ("end".equals(action)) {
 
-			dao.updateStatus(reservenumber, "利用終了");
+			dao.updateStatus1(reservenumber);
 		}
 
 		response.sendRedirect(request.getContextPath() + "/StartendServlet");

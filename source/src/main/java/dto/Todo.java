@@ -16,7 +16,7 @@ public class Todo implements Serializable {
 	private String lostitemmemo;
 	private String userid;
 	private boolean equipmentcheck;
-	
+
 	public Todo(int todoid, int carid, String outsidephoto, String outsidememo, boolean smell, String insideitemmemo,
 			String gasolineamount, boolean lostitem, LocalDateTime createddate, String lostitemmemo, String userid) {
 

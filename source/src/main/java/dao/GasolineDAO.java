@@ -73,7 +73,7 @@ public class GasolineDAO {
 					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
 
 			// SQL文を準備する
-			String sql = "SELECT * FROM gasoline ORDER BY createddate DESC";
+			String sql = "SELECT * FROM gasoline ORDER BY createddate DESC LIMIT 20;";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
 			// SQL実行
@@ -102,6 +102,8 @@ public class GasolineDAO {
 
 		return list;
 	}
+
+	
 
 	// 最安値取得
 	public Gasoline getMinPrice() {
@@ -145,5 +147,78 @@ public class GasolineDAO {
 		}
 
 		return gasoline;
+	}
+
+	public boolean existsStation(String stationname) {
+		Connection conn = null;
+		boolean exists = false;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false"
+					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
+
+			String sql = "SELECT COUNT(*) FROM gasoline WHERE stationname = ?";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, stationname);
+
+			ResultSet rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				exists = rs.getInt(1) > 0;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return exists;
+	}
+
+	public boolean update(Gasoline gasoline) {
+		Connection conn = null;
+		boolean result = false;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false"
+					+ "&serverTimezone=GMT%2B9" + "&rewriteBatchedStatements=true", "root", "password");
+
+			String sql = "UPDATE gasoline " + "SET gasolineprice = ?, " + "userid = ?, " + "createddate = ? "
+					+ "WHERE stationname = ?";
+
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, gasoline.getGasolineprice());
+			pStmt.setString(2, gasoline.getUserid());
+			pStmt.setTimestamp(3, java.sql.Timestamp.valueOf(gasoline.getCreateddate()));
+			pStmt.setString(4, gasoline.getStationname());
+
+			result = pStmt.executeUpdate() > 0;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return result;
 	}
 }

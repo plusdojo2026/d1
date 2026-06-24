@@ -24,7 +24,7 @@ public class HomeServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// もしもログインしていなかったらログインサーブレットにリダイレクトする
+
 		HttpSession session = request.getSession();
 		if (session.getAttribute("userid") == null) {
 			response.sendRedirect("/d1/LoginServlet");
@@ -35,49 +35,42 @@ public class HomeServlet extends HttpServlet {
 		List<Reserve> reserveList = rdao.selectAll();
 
 		LocalDateTime now = LocalDateTime.now();
+		LocalDate today = LocalDate.now();
+
 		List<Reserve> useList = new ArrayList<>();
 		List<Reserve> todayList = new ArrayList<>();
-		LocalDate today = LocalDate.now();
-		String notice = "";
+		StringBuilder notice = new StringBuilder();
+
 		for (Reserve reserve : reserveList) {
 
 			LocalDate reserveDate = reserve.getSdate().toLocalDate();
 
-			// 今日だけ入れる
+			// 今日の予約
 			if (reserveDate.equals(today)) {
 				todayList.add(reserve);
 			}
-		}
-		for (Reserve reserve : reserveList) {
-
-			String car = reserve.getCarname();
 
 			// 利用中
 			if (now.isAfter(reserve.getSdate()) && now.isBefore(reserve.getFdate())) {
 
 				useList.add(reserve);
 
-				notice += "🚗 " + car + " は利用中です<br>";
-
-				// 遅れ通知
+				// 開始遅れ
 				if (now.isAfter(reserve.getSdate())) {
-					notice += "⚠ " + car + " は開始時間を過ぎています<br>";
+					notice.append("⚠ ").append(reserve.getCarname()).append(" は開始ボタンを押していません<br>");
 				}
-
 			}
-			request.setAttribute("useList", useList);
-			request.setAttribute("otherList", todayList);
-			request.setAttribute("notice", notice);
-			// 追加0617
-			CarsDAO dao = new CarsDAO();
-			List<Cars> homeList = dao.findhome();
-			request.setAttribute("homeList", homeList);
-
-			request.setAttribute("notice", notice);
-
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
-			dispatcher.forward(request, response);
-
 		}
+
+		CarsDAO dao = new CarsDAO();
+		List<Cars> homeList = dao.findhome();
+
+		request.setAttribute("useList", useList);
+		request.setAttribute("todayList", todayList);
+		request.setAttribute("notice", notice.toString());
+		request.setAttribute("homeList", homeList);
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
+		dispatcher.forward(request, response);
 	}
 }

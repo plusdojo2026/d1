@@ -1,103 +1,140 @@
 @charset "UTF-8";
 
-header img {
-	width: 120px;
-	height: auto;
-	display: block;
+/* ===== 全体 ===== */
+h3 {
+	text-align: center;
+	margin: 20px 0;
+}
+
+/* ===== フォーム全体 ===== */
+#todo {
+	max-width: 700px;
 	margin: 0 auto;
+	padding: 10px;
 }
 
-.header {
-	background-color: #c0c0c0;
-	padding: 10px 20px;
+/* ===== フォーム1ブロック（カード） ===== */
+.form-group {
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	padding: 12px;
+	margin-bottom: 12px;
+}
+
+/* ラベル */
+.form-group label, .form-group .title {
+	font-weight: bold;
+	display: block;
+	margin-bottom: 6px;
+	font-size: 14px;
+}
+
+/* input共通 */
+.form-group input[type="text"], .form-group input[type="file"] {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px;
+	font-size: 14px;
+}
+
+/* ラジオ・チェック */
+.form-inline {
 	display: flex;
+	gap: 15px;
 	align-items: center;
-	justify-content: center;
-	position: relative;
+	flex-wrap: wrap;
 }
 
-h3{
-	text-align: center
+/* リスト */
+.form-group ul {
+	margin: 0;
+	padding-left: 18px;
+	font-size: 13px;
 }
 
-.item-list{
-    margin: 0;
-    padding-left: 20px;
-}
+/* ===== ボタン ===== */
 .button-area {
 	display: flex;
-
 	justify-content: center;
 	gap: 15px;
 	margin-top: 20px;
 }
+
 .button-area input {
 	min-width: 140px;
-	padding: 10px 24px;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	background: #f0566e;
+	color: white;
 	font-size: 14px;
 	cursor: pointer;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	background: #f5f5f5;
 }
+
 .button-area input:hover {
-  background: #f0566e;
+	opacity: 0.85;
+}
+/* 送信ボタン（緑） */
+.button-area input[type="submit"] {
+	background: #28a745;
+	color: white;
+	border: none;
+}
+
+/* クリアボタン（灰） */
+.button-area input[type="reset"] {
+	background: #6c757d;
+	color: white;
+	border: none;
+}
+
+/* ホバー共通 */
+.button-area input:hover {
+	opacity: 0.85;
+}
+
+/* セレクトボックス基本デザイン */
+select {
+	width: 100%;
+	max-width: 300px;
+	padding: 10px 12px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background: #fff;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+input[type="number"] {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px;
+	font-size: 14px;
 }
 
 
-input[name="lostitem"] {
-    margin-left: 8px;
-}
-input[name="lostitemmemo"] {
-    margin-top: 0;
-}
-
-
-.table-todo {
-    width: 100%;
-    max-width: 700px;
-    margin: 20px auto;
-    display: block;
-
-    border-collapse: collapse;
-    background: white;
-
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* フォーカス時 */
+select:focus {
+	outline: none;
+	border-color: #28a745;
+	box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
 }
 
-
-@media screen and (max-width: 600px) {
-  .table-todo {
-    max-width: 350px;
-    font-size: 12px;
-  }
-
-  .table-todo td,
-  .table-todo th {
-    padding: 6px;
-  }
+/* ===== スマホ ===== */
+@media ( max-width : 768px) {
+	#todo {
+		padding: 10px;
+	}
+	.button-area {
+		flex-direction: column;
+	}
+	.button-area input {
+		width: 100%;
+	}
+	select {
+		width: 30%;
+		font-size: 16px; /* iPhoneズーム防止 */
+	}
 }
-
-.table-todo th{
-    border-bottom: 1px solid #eee;
-}
-.table-todo td {
-    padding: 5px 30px;
-    border-bottom: 1px solid #eee;
-}
-
-.table-todo th {
-    width: 20%;
-    text-align: center;
-    background: #f7f7f7;
-    color: black;
-    font-size: 10px;
-}
-
-.table-todo td {
-    font-size: 16px;
-    color: black;
-}
-
-

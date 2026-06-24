@@ -88,12 +88,13 @@ public class TodoServlet extends HttpServlet {
 		String insideitemmemo = request.getParameter("insideitemmemo");
 		String gasolineamount = request.getParameter("gasolineamount");
 		String lostitemStr = request.getParameter("lostitem");
+		String equipmentcheckStr = request.getParameter("equipmentcheck");
 		String lostitemmemo = request.getParameter("lostitemmemo");
 		String select = request.getParameter("select");
 
 		//入力チェック
 		if (fileName == null || fileName.isEmpty() || smellStr == null || lostitemStr == null || gasolineamount == null
-				|| gasolineamount.isEmpty()) {
+				|| gasolineamount.isEmpty() || equipmentcheckStr == null) {
 
 			request.setAttribute("error", "必須項目が入力されていません");
 
@@ -103,8 +104,8 @@ public class TodoServlet extends HttpServlet {
 
 		//変換 
 		boolean smell = "1".equals(smellStr);
-		boolean lostitem = true; // チェックされている前提
-
+		boolean lostitem = lostitemStr != null;
+		boolean equipmentcheck = equipmentcheckStr != null;
 		//carid取得
 		ReserveDAO dao = new ReserveDAO();
 		int carid = dao.findCarid(select);
@@ -128,6 +129,7 @@ public class TodoServlet extends HttpServlet {
 		todo.setSmell(smell);
 		todo.setInsideitemmemo(insideitemmemo);
 		todo.setGasolineamount(gasolineamount);
+		todo.setEquipmentcheck(equipmentcheck);
 		todo.setLostitem(lostitem);
 		todo.setLostitemmemo(lostitemmemo);
 		todo.setUserid(userid);
@@ -142,7 +144,7 @@ public class TodoServlet extends HttpServlet {
 		System.out.println("userid=" + userid);
 
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
 		dispatcher.forward(request, response);
 	}
 }

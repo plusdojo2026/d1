@@ -107,7 +107,13 @@ public class GasolineServlet extends HttpServlet {
 		GasolineDAO dao = new GasolineDAO();
 
 		System.out.println("登録開始");
-		boolean result = dao.insert(gasoline);
+		boolean result;
+
+		if (dao.existsStation(stationname)) {
+			result = dao.update(gasoline);
+		} else {
+			result = dao.insert(gasoline);
+		}
 		System.out.println("登録終了");
 		System.out.println("登録結果=" + result);
 //		List<Gasoline> gasolineList = dao.selectAll();
