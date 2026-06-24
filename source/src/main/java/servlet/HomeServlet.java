@@ -45,20 +45,20 @@ public class HomeServlet extends HttpServlet {
 
 			LocalDate reserveDate = reserve.getSdate().toLocalDate();
 
-			// 今日の予約
-			if (reserveDate.equals(today)) {
-				todayList.add(reserve);
-			}
+//			// 今日の予約
+//			if (reserveDate.equals(today)) {
+//				todayList.add(reserve);
+//			}
 
 			// 利用中
-			if (now.isAfter(reserve.getSdate()) && now.isBefore(reserve.getFdate())) {
-
+			if (reserve.getStatusid() == 2) {
 				useList.add(reserve);
+			}
 
-				// 開始遅れ
-				if (now.isAfter(reserve.getSdate())) {
-					notice.append("⚠ ").append(reserve.getCarname()).append(" は開始ボタンを押していません<br>");
-				}
+			// 開始遅れ
+			if (now.isAfter(reserve.getSdate()) && now.isBefore(reserve.getFdate()) && reserve.getStatusid() == 1) {
+
+				notice.append("⚠ ").append(reserve.getCarname()).append(" は開始ボタンを押していません<br>");
 			}
 		}
 

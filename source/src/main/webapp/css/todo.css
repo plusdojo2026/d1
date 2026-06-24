@@ -127,9 +127,7 @@ select:focus {
 	#todo {
 		padding: 10px;
 	}
-	.button-area {
-		flex-direction: column;
-	}
+	
 	.button-area input {
 		width: 100%;
 	}

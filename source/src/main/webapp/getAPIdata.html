@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>平均</title>
+
+<style>
+#delbox{
+    display:none;
+}
+
+#result{
+    margin-top:20px;
+    padding:10px 25px;
+    border:solid 1px #765521;
+    width:400px;
+}
+</style>
+
+</head>
+<body>
+
+<p>
+ボタンをクリックするとサーブレットからCSVデータを取得します。
+</p>
+
+平均：
+<input type="text" id="Avg" size="10" readonly>
+
+<button id="getbox" type="button">
+    データの取得
+</button>
+
+<button id="delbox" type="button">
+    データ消去ボタン
+</button>
+
+<div id="result"></div>
+
+<script>
+
+// データ取得
+const getData = () => {
+
+    fetch("http://localhost:8080/d1/GetGasolineApi")
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error("通信エラー");
+        }
+
+        return response.json();
+    })
+    .then(jsonObject => {
+
+        // 平均価格をテキストボックスへ表示
+        document.getElementById("Avg").value =
+            jsonObject.averagePrice;
+
+        // 結果表示
+        let resultText = "";
+
+        resultText +=
+            "平均価格：" +
+            jsonObject.averagePrice +
+            "<br>";
+
+        resultText +=
+            "データ件数：" +
+            jsonObject.dataCount +
+            "<br>";
+
+        document.getElementById("result").innerHTML =
+            resultText;
+
+        // 消去ボタン表示
+        document.getElementById("delbox").style.display =
+            "inline";
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById("result").innerHTML =
+            "データ取得に失敗しました";
+    });
+};
+
+// 取得ボタン
+document.getElementById("getbox")
+.addEventListener("click", getData);
+
+// データ消去
+const del = (e) => {
+
+    document.getElementById("Avg").value = "";
+
+    document.getElementById("result").innerHTML = "";
+
+    e.target.style.display = "none";
+};
+
+// 消去ボタン
+document.getElementById("delbox")
+.addEventListener("click", del);
+
+</script>
+
+</body>
+</html>

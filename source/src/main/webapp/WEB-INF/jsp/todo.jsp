@@ -100,8 +100,8 @@
 		</div>
 		<p id="errorMsg"></p>
 		<div class="button-area">
-			<input type="submit" value="送信"> <input type="reset"
-				value="クリア" onclick="clearError()">
+			<input type="reset" value="クリア" onclick="clearError()"> <input
+				type="submit" value="送信">
 		</div>
 
 
@@ -115,6 +115,12 @@
 		const equipmentcheck = document.forms[1].equipmentcheck.checked;
 		const lostitem = document.forms[1].lostitem.checked;
 		const gasoline = document.forms[1].gasolineamount.value;
+
+		// 追加：メモ欄
+		const photoMemo = document.forms[1].outsidememo.value;
+		const equipmentMemo = document.forms[1].insideitemmemo.value;
+		const lostMemo = document.forms[1].lostitemmemo.value;
+
 		const error = document.getElementById("errorMsg");
 
 		error.innerHTML = "";
@@ -128,6 +134,7 @@
 			error.innerHTML = "タバコの匂いを選択してください";
 			return false;
 		}
+
 		if (!equipmentcheck) {
 			error.innerHTML = "備品確認をチェックしてください";
 			return false;
@@ -143,8 +150,25 @@
 			return false;
 		}
 
+		// 追加：メモ200文字制限
+		if (photoMemo.length > 200) {
+			error.innerHTML = "写真メモは200文字以内で入力してください";
+			return false;
+		}
+
+		if (equipmentMemo.length > 200) {
+			error.innerHTML = "備品メモは200文字以内で入力してください";
+			return false;
+		}
+
+		if (lostMemo.length > 200) {
+			error.innerHTML = "忘れ物メモは200文字以内で入力してください";
+			return false;
+		}
+
 		return true;
 	}
+
 	function clearError() {
 		document.getElementById("errorMsg").innerHTML = "";
 	}

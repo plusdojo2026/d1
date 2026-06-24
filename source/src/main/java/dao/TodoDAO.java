@@ -80,7 +80,8 @@ public class TodoDAO {
 					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
 					"password");
 
-			String sql = "SELECT COUNT(*) FROM Todo WHERE userid = ?";
+			String sql = "SELECT COUNT(*) FROM todo inner join reserve on todo.carid=reserve.carid WHERE todo.userid = ? "
+					+ "AND reserve.statusid=2 AND reserve.sdate < todo.createddate AND todo.createddate<reserve.fdate";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 

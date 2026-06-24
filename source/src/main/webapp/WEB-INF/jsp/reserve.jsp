@@ -12,25 +12,25 @@
 <style>
 /* 月表示（DayGrid）の各セルのパディングを調整 */
 .fc .fc-daygrid-day-frame {
-  padding: 0 !important; /* 内側の余白をリセット */
+	padding: 0 !important; /* 内側の余白をリセット */
 }
 
 /* 日付テキスト自体の余白を調整 */
 .fc .fc-daygrid-day-top {
-  padding: 0 !important;
+	padding: 0 !important;
 }
 
 /* タイムグリッド（TimeGrid）のセルのマージンを詰める場合 */
-.fc .fc-timegrid-slot,
-.fc .fc-timegrid-col {
-  padding: 0 !important;
+.fc .fc-timegrid-slot, .fc .fc-timegrid-col {
+	padding: 0 !important;
 }
-
 </style>
 <script
 	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
 <script
 	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/locales/ja.global.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.20/index.global.min.js"></script>
 <script>
 
 
@@ -70,6 +70,7 @@ const events = [
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
     	initialView: 'dayGridMonth',
+    	allDaySlot: false,
     	  aspectRatio: 0.3, // デフォルトは 1.35。小さくすると縦幅が縮まります	
       height: 300, // カレンダーの高さを600pxに固定  
       locale:'ja',
@@ -136,9 +137,9 @@ startInput.addEventListener('change', function () {
 </head>
 <body class="body">
 	<header class="header">
-	<a href="${pageContext.request.contextPath}/HomeServlet"> <img
-		alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
-	</a>
+		<a href="${pageContext.request.contextPath}/HomeServlet"> <img
+			alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+		</a>
 		<div class="hamburger-menu">
 			<input type="checkbox" id="menu-btn-check"> <label
 				for="menu-btn-check" class="menu-btn"><span></span></label>
@@ -159,14 +160,14 @@ startInput.addEventListener('change', function () {
 			<!--ここまでメニュー-->
 		</div>
 	</header>
-		<form id=carfrom method="get" action="/d1/ReserveServlet">
-			<select class="ca" name="select" onchange="this.form.submit()">
-				<c:forEach var="ca" items="${carlist}">
-					<option value="${ca.carname}"
-						${select == ca.carname ? 'selected' : ''}>${ca.carname}</option>
-				</c:forEach>
-			</select>
-		</form>
+	<form id=carfrom method="get" action="/d1/ReserveServlet">
+		<select class="ca" name="select" onchange="this.form.submit()">
+			<c:forEach var="ca" items="${carlist}">
+				<option value="${ca.carname}"
+					${select == ca.carname ? 'selected' : ''}>${ca.carname}</option>
+			</c:forEach>
+		</select>
+	</form>
 	<div id='calendar'></div>
 
 	<form id="reserve_form" method="POST" action="/d1/ReserveServlet">
@@ -188,7 +189,7 @@ startInput.addEventListener('change', function () {
 
 				<div class="form-group">
 					<label for="co">目的</label> <input type="text" id="co"
-						name="purpose" placeholder="">
+						name="purpose">
 				</div>
 			</div>
 
@@ -232,9 +233,9 @@ startInput.addEventListener('change', function () {
 			</div>
 		</form>
 	</div>
-	
+
 	<!-- 表示モーダル -->
-		<div id="viewModal">
+	<div id="viewModal">
 		<h3>予約内容</h3>
 		<span id="editError" class="error"></span>
 		<form id="edit_form" method="POST" action="/d1/ReserveServlet">
@@ -287,6 +288,12 @@ startInput.addEventListener('change', function () {
 		        event.preventDefault();
 		        return;
 		    }
+		    if (purpose.length > 50) {
+		        errorMessage.textContent = "※目的は50文字以内で入力してください！";
+		        form.purpose.style.backgroundColor = "#ffe6e6";
+		        event.preventDefault();
+		        return;
+		    }
 
 		    //  開始日時
 		    if (sdate === "") {
@@ -312,6 +319,8 @@ startInput.addEventListener('change', function () {
 		        event.preventDefault();
 		        return;
 		    }
+		    
+		   
 		};
 		form.onreset = function() {
 		    errorMessage.textContent = "";
@@ -319,7 +328,7 @@ startInput.addEventListener('change', function () {
 		    form.sdate.style.backgroundColor = "";
 		    form.fdate.style.backgroundColor = "";
 		};
-		</script>
+</script>
 <script>
 const editForm = document.getElementById('edit_form');
 const editError = document.getElementById('editError');
@@ -368,6 +377,12 @@ editForm.onsubmit = function(event) {
         document.getElementById("sedit").style.backgroundColor = "#ffe6e6";
         document.getElementById("fedit").style.backgroundColor = "#ffe6e6";
 
+        event.preventDefault();
+        return;
+    }
+    if (purpose.length > 50) {
+        editError.textContent = "※目的は50文字以内で入力してください！";
+        document.getElementById("pedit").style.backgroundColor = "#ffe6e6";
         event.preventDefault();
         return;
     }

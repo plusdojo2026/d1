@@ -79,7 +79,6 @@ public class TodoServlet extends HttpServlet {
 		String userid = (String) session.getAttribute("userid");
 		request.setCharacterEncoding("UTF-8");
 
-		
 		Part photo = request.getPart("outsidephoto");
 		String fileName = (photo != null) ? photo.getSubmittedFileName() : null;
 
@@ -92,7 +91,7 @@ public class TodoServlet extends HttpServlet {
 		String lostitemmemo = request.getParameter("lostitemmemo");
 		String select = request.getParameter("select");
 
-		//入力チェック
+		// 入力チェック
 		if (fileName == null || fileName.isEmpty() || smellStr == null || lostitemStr == null || gasolineamount == null
 				|| gasolineamount.isEmpty() || equipmentcheckStr == null) {
 
@@ -102,26 +101,28 @@ public class TodoServlet extends HttpServlet {
 			return;
 		}
 
-		//変換 
+		// 変換
 		boolean smell = "1".equals(smellStr);
 		boolean lostitem = lostitemStr != null;
 		boolean equipmentcheck = equipmentcheckStr != null;
-		//carid取得
+		// carid取得
 		ReserveDAO dao = new ReserveDAO();
 		int carid = dao.findCarid(select);
 
-		//ファイル保存
-		String uploadPath = "C:/pleiades/workspace/d1/src/main/webapp/img/";
+		// ファイル保存
+		String uploadPath = getServletContext().getRealPath("/img");
+
 		File uploadDir = new File(uploadPath);
+
 		if (!uploadDir.exists()) {
 			uploadDir.mkdirs();
 		}
 
-		if (photo != null) {
-			photo.write(uploadPath + fileName);
+		if (photo != null && fileName != null && !fileName.isEmpty()) {
+			photo.write(uploadPath + File.separator + fileName);
 		}
 
-		//DTO
+		// DTO
 		Todo todo = new Todo();
 		todo.setCarid(carid);
 		todo.setOutsidephoto(fileName);
@@ -134,7 +135,7 @@ public class TodoServlet extends HttpServlet {
 		todo.setLostitemmemo(lostitemmemo);
 		todo.setUserid(userid);
 
-		//DAO
+		// DAO
 		TodoDAO dao1 = new TodoDAO();
 		boolean result = dao1.insert(todo);
 
@@ -143,8 +144,7 @@ public class TodoServlet extends HttpServlet {
 		System.out.println("select=" + select);
 		System.out.println("userid=" + userid);
 
-		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
-		dispatcher.forward(request, response);
+		response.sendRedirect(request.getContextPath() + "/StartendServlet");
+		return;
 	}
 }

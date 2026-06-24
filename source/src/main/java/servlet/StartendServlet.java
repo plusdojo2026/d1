@@ -44,7 +44,7 @@ public class StartendServlet extends HttpServlet {
 			response.sendRedirect("/d1/LoginServlet");
 			return;
 		}
-		
+
 		String userid = (String) session.getAttribute("userid");
 
 		TodoDAO todoDao = new TodoDAO();
@@ -52,18 +52,16 @@ public class StartendServlet extends HttpServlet {
 		request.setAttribute("hasTodo", hasTodo);
 
 		ReserveDAO reserveDao = new ReserveDAO();
-		
-		
+
 		List<Reserve> starts = reserveDao.reserveAllk(userid);
 		request.setAttribute("starts", starts);
-		
+
 		List<Reserve> top1 = reserveDao.reserveAlls(userid);
 		request.setAttribute("top1", top1);
-		
+
 		List<Reserve> reservelist = reserveDao.reserveAll(userid);
 		request.setAttribute("reservelist", reservelist);
-		
-		
+
 		// 追加
 		boolean hasReserve = !reservelist.isEmpty();
 		request.setAttribute("hasReserve", hasReserve);
@@ -75,22 +73,21 @@ public class StartendServlet extends HttpServlet {
 
 			Reserve reserve = reservelist.get(0);
 
-			if (reserve.getStatusid()==1 && !now.isBefore(reserve.getSdate())
-					&& now.isBefore(reserve.getFdate())) {
+			if (reserve.getStatusid() == 1 && !now.isBefore(reserve.getSdate()) && now.isBefore(reserve.getFdate())) {
 				canStart = true;
 			}
 
-			if (reserve.getStatusid()==2 && hasTodo) {
+			if (reserve.getStatusid() == 2 && hasTodo) {
 				canEnd = true;
 			}
-			if (reserve.getStatusid()==3 ){
-		        showQR = true;
-		    }
+			if (reserve.getStatusid() == 3) {
+				showQR = true;
+			}
 		}
 		request.setAttribute("showQR", showQR);
 		request.setAttribute("canStart", canStart);
 		request.setAttribute("canEnd", canEnd);
-		
+
 		System.out.println("userid=" + userid);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
 		dispatcher.forward(request, response);
@@ -111,20 +108,20 @@ public class StartendServlet extends HttpServlet {
 
 		ReserveDAO dao = new ReserveDAO();
 
-
 		if ("start".equals(action)) {
 
 			dao.updateStatus(reservenumber);
-			List<Reserve> top1 = dao.reserveAlls(userid);
-			request.setAttribute("top1", top1);
-			List<Reserve> reservelist = dao.reserveAll(userid);
-			request.setAttribute("reservelist", reservelist);
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/startend.jsp");
-			dispatcher.forward(request, response);
 
-		} else if ("end".equals(action)) {
+			response.sendRedirect(request.getContextPath() + "/StartendServlet");
+			return;
+		}
+
+		else if ("end".equals(action)) {
 
 			dao.updateStatus1(reservenumber);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/qr.jsp");
+			dispatcher.forward(request, response);
+			return;
 		}
 
 		response.sendRedirect(request.getContextPath() + "/StartendServlet");

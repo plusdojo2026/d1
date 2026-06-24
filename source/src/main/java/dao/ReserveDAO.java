@@ -237,7 +237,7 @@ public class ReserveDAO {
 
 		return result;
 	}
-	
+
 	public boolean updateStatus1(int reservenumber) {
 
 		Connection conn = null;
@@ -424,7 +424,7 @@ public class ReserveDAO {
 		List<Reserve> reserveList = new ArrayList<>();
 
 		try {
-			String sql = "SELECT reserve.sdate, reserve.fdate, cars.carname " + "FROM reserve "
+			String sql = "SELECT reserve.sdate, reserve.fdate, cars.carname, reserve.statusid " + "FROM reserve "
 					+ "INNER JOIN cars ON reserve.carid = cars.carid";
 			pStmt = conn.prepareStatement(sql);
 			rs = pStmt.executeQuery();
@@ -435,7 +435,7 @@ public class ReserveDAO {
 				reserve.setSdate(rs.getTimestamp("sdate").toLocalDateTime());
 				reserve.setFdate(rs.getTimestamp("fdate").toLocalDateTime());
 				reserve.setCarname(rs.getString("carname"));
-
+				reserve.setStatusid(rs.getInt("statusid"));
 				reserveList.add(reserve);
 			}
 		} catch (SQLException e) {
@@ -454,11 +454,10 @@ public class ReserveDAO {
 		List<Reserve> reserveList = new ArrayList<>();
 
 		try {
-			String sql = "SELECT reserve.reservenumber, reserve.sdate, reserve.fdate, "
-					+ "cars.carname, purpose " + "FROM reserve "
-					+ "INNER JOIN cars ON reserve.carid = cars.carid WHERE userid = ? " 
-					+"AND (reserve.statusid = 2 OR (sdate >= CURDATE() AND sdate <DATE_ADD(CURDATE(),INTERVAL 1 DAY))) "
-					+ "ORDER BY sdate " ;
+			String sql = "SELECT reserve.reservenumber, reserve.sdate, reserve.fdate, " + "cars.carname, purpose "
+					+ "FROM reserve " + "INNER JOIN cars ON reserve.carid = cars.carid WHERE userid = ? "
+					+ "AND (reserve.statusid = 2 OR (sdate >= CURDATE() AND sdate <DATE_ADD(CURDATE(),INTERVAL 1 DAY))) "
+					+ "ORDER BY sdate ";
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, userid);
 
@@ -514,7 +513,7 @@ public class ReserveDAO {
 
 		return reserveList;
 	}
-	
+
 	public List<Reserve> reserveAllk(String userid) {
 		Connection conn = getConnection();
 		ResultSet rs = null;

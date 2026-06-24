@@ -1,6 +1,10 @@
 package servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 import dao.GasolineDAO;
 import dto.Gasoline;
 
@@ -20,20 +26,66 @@ public class GasolineServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	private int getAveragePriceFromApi() {
+
+	    int avgPrice = 0;
+
+	    try {
+
+	        URL url =
+	            new URL(
+	              "http://localhost:8080/d1/GetGasolineApi");
+
+	        HttpURLConnection con =
+	            (HttpURLConnection) url.openConnection();
+
+	        con.setRequestMethod("GET");
+
+	        BufferedReader br =
+	            new BufferedReader(
+	                new InputStreamReader(
+	                    con.getInputStream(),
+	                    "UTF-8"));
+
+	        StringBuilder sb =
+	            new StringBuilder();
+
+	        String line;
+
+	        while ((line = br.readLine()) != null) {
+	            sb.append(line);
+	        }
+
+	        br.close();
+
+	        JSONObject json =
+	            new JSONObject(sb.toString());
+
+	        avgPrice =
+	            json.getInt("averagePrice");
+
+	    } catch (Exception e) {
+
+	        e.printStackTrace();
+	    }
+
+	    return avgPrice;
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		// もしもログインしていなかったらログインサーブレットにリダイレクトする
-		HttpSession session = request.getSession();
-		if (session.getAttribute("userid") == null) {
-			response.sendRedirect("/d1/LoginServlet");
-			return;
-		}
+				HttpSession session = request.getSession();
+				if (session.getAttribute("userid") == null) {
+					response.sendRedirect("/d1/LoginServlet");
+					return;
+				}
 		GasolineDAO dao = new GasolineDAO();
 
 		List<Gasoline> gasolineList = dao.selectAll();
-		int avgPrice = 168;
+		int avgPrice = getAveragePriceFromApi();
 
 		for (Gasoline gasoline : gasolineList) {
 			int diff = gasoline.getGasolineprice() - avgPrice;
@@ -60,7 +112,7 @@ public class GasolineServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("doPost実行");
+
 		request.setCharacterEncoding("UTF-8");
 
 		String stationname = request.getParameter("stationname");
@@ -78,72 +130,15 @@ public class GasolineServlet extends HttpServlet {
 
 		gasolineprice = Integer.parseInt(priceStr);
 
-		int avgPrice = 168;
-
-		int diff;
-		String resultMessage;
-
-		if (gasolineprice < avgPrice) {
-
-			diff = avgPrice - gasolineprice;
-
-			resultMessage = "-" + diff;
-
-		} else if (gasolineprice > avgPrice) {
-
-			diff = gasolineprice - avgPrice;
-
-			resultMessage = "+" + diff;
-
-		} else {
-
-			diff = 0;
-
-			resultMessage = "±0";
-		}
-
 		Gasoline gasoline = new Gasoline(0, userid, stationname, gasolineprice, LocalDateTime.now());
 
 		GasolineDAO dao = new GasolineDAO();
 
-		System.out.println("登録開始");
-		boolean result;
-
-		if (dao.existsStation(stationname)) {
-			result = dao.update(gasoline);
-		} else {
-			result = dao.insert(gasoline);
-		}
-		System.out.println("登録終了");
+		boolean result = dao.insert(gasoline);
 		System.out.println("登録結果=" + result);
-//		List<Gasoline> gasolineList = dao.selectAll();
-//		for (Gasoline gasoline1 : gasolineList) {
-//			int diff1 = gasoline1.getGasolineprice() - avgPrice;
-//
-//			if (diff1 > 0) {
-//				gasoline1.setResultMessage("+" + diff1);
-//			} else if (diff1 < 0) {
-//				gasoline1.setResultMessage(String.valueOf(diff1));
-//			} else {
-//				gasoline1.setResultMessage("±0");
-//			}
-//		}
-//
-//		Gasoline minGasoline = dao.getMinPrice();
-//
-//		request.setAttribute("stationname", stationname);
-//
-//		request.setAttribute("avgPrice", avgPrice);
-//
-//		request.setAttribute("diff", diff);
-//
-//		request.setAttribute("resultMessage", resultMessage);
-//
-//		request.setAttribute("gasolineList", gasolineList);
-//
-//		request.setAttribute("minGasoline", minGasoline);
-
-		response.sendRedirect(request.getContextPath() + "/GasolineServlet");
-		return;
+		
+		// JSONレスポンスを返す
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().write("{\"success\": " + result + "}");
 	}
 }
