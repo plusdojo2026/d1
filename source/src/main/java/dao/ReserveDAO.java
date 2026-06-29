@@ -15,8 +15,8 @@ import dto.Reserve;
 public class ReserveDAO {
 	// データベースの情報を格納するフィールド(他のDAOにもコピペで使用)
 	private final String URL = "jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true";
-	private final String USER = "root";
-	private final String PASS = "password";
+	private final String USER = "d1";
+	private final String PASS = "6xdXyRxWhU3jddz5";
 
 //		public List<Reserve> Select(int carid) {
 //			Connection conn = getConnection();
@@ -213,8 +213,8 @@ public class ReserveDAO {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
-					"password");
+					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "d1",
+					"6xdXyRxWhU3jddz5");
 
 			String sql = "UPDATE reserve SET statusid = 2 WHERE reservenumber=?";
 
@@ -247,8 +247,8 @@ public class ReserveDAO {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "root",
-					"password");
+					"jdbc:mysql://localhost:3306/d1?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9", "d1",
+					"6xdXyRxWhU3jddz5");
 
 			String sql = "UPDATE reserve SET statusid = 3 WHERE reservenumber=?";
 
@@ -310,7 +310,7 @@ public class ReserveDAO {
 		try {
 
 			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE carid=? " + "AND sdate < ? "
-					+ "AND fdate > ?";
+					+ "AND fdate > ? AND statusid=1";
 
 			pStmt = conn.prepareStatement(sql);
 
@@ -342,7 +342,7 @@ public class ReserveDAO {
 		try {
 
 			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE userid = ? " + "AND sdate < ? "
-					+ "AND fdate > ?";
+					+ "AND fdate > ? AND statusid=1";
 
 			pStmt = conn.prepareStatement(sql);
 
@@ -456,7 +456,7 @@ public class ReserveDAO {
 		try {
 			String sql = "SELECT reserve.reservenumber, reserve.sdate, reserve.fdate, " + "cars.carname, purpose "
 					+ "FROM reserve " + "INNER JOIN cars ON reserve.carid = cars.carid WHERE userid = ? "
-					+ "AND (reserve.statusid = 2 OR (sdate >= CURDATE() AND sdate <DATE_ADD(CURDATE(),INTERVAL 1 DAY))) "
+					+ "AND (reserve.statusid = 2 OR (sdate >= CURDATE() AND sdate <DATE_ADD(CURDATE(),INTERVAL 1 DAY)) AND statusid <> 3) "
 					+ "ORDER BY sdate ";
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, userid);
@@ -522,7 +522,7 @@ public class ReserveDAO {
 
 		try {
 			String sql = "SELECT reserve.reservenumber, reserve.fdate FROM reserve "
-					+ "WHERE userid LIKE ? AND  sdate >= NOW() - INTERVAL 1 hour "
+					+ "WHERE userid LIKE ? AND  sdate >= NOW() - INTERVAL 30 minute "
 					+ "AND sdate <= NOW() + INTERVAL 1 hour AND statusid = 1 ORDER BY sdate LIMIT 1";
 			pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, "%" + userid.trim() + "%");
@@ -544,6 +544,101 @@ public class ReserveDAO {
 		}
 
 		return reserveList;
+	}
+
+	public boolean existsCarReserve1(int carid, LocalDateTime sdate, LocalDateTime fdate, int reservenumber) {
+
+		Connection conn = getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE carid=? " + "AND sdate < ? "
+					+ "AND fdate > ? AND reservenumber <> ? ";
+
+			pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, carid);
+			pStmt.setTimestamp(2, java.sql.Timestamp.valueOf(fdate));
+			pStmt.setTimestamp(3, java.sql.Timestamp.valueOf(sdate));
+			pStmt.setInt(4, reservenumber);
+
+			rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("cnt") > 0;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, rs, pStmt);
+		}
+
+		return false;
+	}
+
+	public boolean existsUserReserve1(String userid, LocalDateTime sdate, LocalDateTime fdate, int reservenumber) {
+
+		Connection conn = getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			String sql = "SELECT COUNT(*) cnt " + "FROM reserve " + "WHERE userid = ? " + "AND sdate < ? "
+					+ "AND fdate > ? AND reservenumeber <> ? ";
+
+			pStmt = conn.prepareStatement(sql);
+
+			pStmt.setString(1, userid);
+			pStmt.setTimestamp(2, java.sql.Timestamp.valueOf(fdate));
+			pStmt.setTimestamp(3, java.sql.Timestamp.valueOf(sdate));
+			pStmt.setInt(4, reservenumber);
+
+			rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("cnt") > 0;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, rs, pStmt);
+		}
+
+		return false;
+	}
+
+	public boolean existsCarReserve2(int reservenumber) {
+
+		Connection conn = getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			String sql = "SELECT statusid " + "FROM reserve " + "WHERE reservenumber=?";
+
+			pStmt = conn.prepareStatement(sql);
+
+			pStmt.setInt(1, reservenumber);
+
+			rs = pStmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("statusid") > 1;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, rs, pStmt);
+		}
+
+		return false;
 	}
 
 	// 以下二つのメソッドも他のDAOにコピペで利用

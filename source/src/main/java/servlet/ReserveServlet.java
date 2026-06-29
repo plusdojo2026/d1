@@ -95,7 +95,26 @@ public class ReserveServlet extends HttpServlet {
 
 		ReserveDAO dao = new ReserveDAO();
 		int carid = dao.findCarid(select);
+		// ここから追加
+		if ("登録".equals(request.getParameter("regist")) || "更新".equals(request.getParameter("submit"))) {
 
+			LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+
+			// 開始日時が現在より前
+			if (sdate == null || sdate.isBefore(now)) {
+				request.setAttribute("result", new Result("登録失敗！", "開始日時は現在日時より後を指定してください。", "/d1/ReserveServlet"));
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
+
+			// 終了日時が開始日時以前
+			if (fdate == null || !fdate.isAfter(sdate)) {
+				request.setAttribute("result", new Result("登録失敗！", "終了日時は開始日時より後を指定してください。", "/d1/ReserveServlet"));
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
+		}
+		// ここまで追加
 //		// 同じ車両の重複予約チェック
 //		if ("登録".equals(request.getParameter("regist"))) {
 //
@@ -133,33 +152,52 @@ public class ReserveServlet extends HttpServlet {
 			// 登録処理
 			if (dao.insert(new Reserve(userid, sdate, fdate, carid, purpose))) {
 
-				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("登録成功！", "レコードを登録しました。", "/d1/ReserveServlet"));
 
 			} else {
 
-				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("登録失敗！", "レコードを登録できませんでした。", "/d1/ReserveServlet"));
 			}
 
 		} else if ("更新".equals(request.getParameter("submit"))) {
+			// 同じ車の重複チェック
+			if (dao.existsCarReserve1(carid, sdate, fdate, reservenumber)) {
+				request.setAttribute("result", new Result("更新失敗！", "その車両は既に予約されています。", "/d1/ReserveServlet"));
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
+			// 同じユーザーの時間重複チェック
+			if (dao.existsUserReserve1(userid, sdate, fdate, reservenumber)) {
+				request.setAttribute("result", new Result("更新失敗！", "同じ時間帯に既に予約があります。", "/d1/ReserveServlet"));
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
 
 			if (dao.update(new Reserve(reservenumber, sdate, fdate, purpose))) {
 
-				request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("更新成功！", "レコードを更新しました。", "/d1/ReserveServlet"));
 
 			} else {
 
-				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("更新失敗！", "レコードを更新できませんでした。", "/d1/ReserveServlet"));
 			}
 
 		} else if ("削除".equals(request.getParameter("submit"))) {
+			// statuscheck
+			if (dao.existsCarReserve2(reservenumber)) {
 
+				request.setAttribute("result", new Result("削除失敗！", "その予約は予約開始中または予約終了後です。", "/d1/ReserveServlet"));
+
+				request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+				return;
+			}
 			if (dao.delete(reservenumber)) {
 
-				request.setAttribute("result", new Result("削除成功！", "レコードを削除しました。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("削除成功！", "レコードを削除しました。", "/d1/ReserveServlet"));
 
 			} else {
 
-				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/HomeServlet"));
+				request.setAttribute("result", new Result("削除失敗！", "レコードを削除できませんでした。", "/d1/ReserveServlet"));
 			}
 		}
 

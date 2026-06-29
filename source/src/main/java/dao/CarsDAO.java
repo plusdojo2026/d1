@@ -23,9 +23,9 @@ public class CarsDAO {
 			// データベースに接続する
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
 					+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 			// SQL文を準備する
-			String sql = "SELECT carstatus FROM Cars WHERE carid = ? ";
+			String sql = "SELECT carstatus FROM cars WHERE carid = ? ";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, carid);
@@ -61,9 +61,9 @@ public class CarsDAO {
 			// データベースに接続する
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
 					+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 			// SQL文を準備する
-			String sql = "SELECT carimage FROM Cars WHERE carid = ? ";
+			String sql = "SELECT carimage FROM cars WHERE carid = ? ";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, carid);
@@ -98,9 +98,9 @@ public class CarsDAO {
 
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 
-			String sql = "SELECT carid, carname FROM Cars";
+			String sql = "SELECT carid, carname FROM cars";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();
@@ -138,9 +138,9 @@ public class CarsDAO {
 			// データベースに接続する
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
 					+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 			// SQL文を準備する
-			String sql = "SELECT outsidememo,smell,insideitemmemo,gasolineamount,lostitemmemo,outsidephoto FROM Todo WHERE carid = ? " + 
+			String sql = "SELECT outsidememo,smell,insideitemmemo,gasolineamount,lostitemmemo,outsidephoto FROM todo WHERE carid = ? " + 
 			             "ORDER BY createddate desc";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
@@ -187,10 +187,10 @@ public class CarsDAO {
 			// データベースに接続する
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/d1?"
 					+ "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9&rewriteBatchedStatements=true",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 			// SQL文を準備する
-			String sql = "SELECT Reserve.sdate,Reserve.fdate,Idpw.username FROM Reserve "
-					+ "INNER JOIN Idpw ON Reserve.userid = Idpw.userid WHERE Reserve.carid = ? ORDER BY Reserve.sdate DESC";
+			String sql = "SELECT reserve.sdate,reserve.fdate,idpw.username FROM reserve "
+					+ "INNER JOIN idpw ON reserve.userid = idpw.userid WHERE reserve.carid = ? ORDER BY reserve.sdate DESC";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setInt(1, carid);
 			ResultSet rs = pStmt.executeQuery();
@@ -232,9 +232,9 @@ public class CarsDAO {
 
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/d1?" + "characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B9",
-					"root", "password");
+					"d1", "6xdXyRxWhU3jddz5");
 
-			String sql = "SELECT carid,carname,carimage FROM Cars";
+			String sql = "SELECT carid,carname,carimage FROM cars";
 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();

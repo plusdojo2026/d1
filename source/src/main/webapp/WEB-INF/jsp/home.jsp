@@ -18,7 +18,7 @@
 	gap: 10px;
 	max-width: 100%;
 	margin: 0 auto;
-	margin-top: 40px;
+	margin-top: 20px;
 }
 
 #s a {
@@ -28,7 +28,7 @@
 
 #s img {
 	width: 100%;
-	height: auto;
+	height: 150px;
 	object-fit: cover;
 	border-radius: 8px;
 	transition: transform 0.3s ease;
@@ -42,7 +42,7 @@ header img {
 }
 
 .header {
-	background-color: #c0c0c0;
+	background-color: #C0C0C0;
 	padding: 10px 20px;
 	display: flex;
 	align-items: center;
@@ -78,14 +78,13 @@ header img {
 	</header>
 	<div class="notice">
 		<h2>お知らせ</h2>
-		${notice}
-
-		🚗利用中
+		${notice} 🚗
 
 		<c:forEach var="r" items="${useList}">
 			<div
 				style="background-color: #fff3cd; border: 2px solid orange; padding: 10px; margin-bottom: 10px;">
-				<b>${r.carname}</b> は利用中です<br> 開始：${r.sdate.toString().replace("T"," ")}<br>
+				<b>${r.carname}</b> は利用中です<br>
+				開始：${r.sdate.toString().replace("T"," ")}<br>
 				終了：${r.fdate.toString().replace("T"," ")}
 			</div>
 		</c:forEach>

@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 header img {
 	width: 120px;
 	height: auto;
@@ -16,59 +17,81 @@ header img {
 }
 /* 車種別画面 */
 .info-box {
-    background-color: #f8fafc;
-    border-left: 4px solid #7698d8;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #555;
+	background-color: #f8fafc;
+	border-left: 4px solid #7698d8;
+	padding: 15px;
+	border-radius: 6px;
+	margin-bottom: 10px;
+	font-size: 13px;
+	color: #555;
 }
+
 .table-view {
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto;
-
-    border-collapse: collapse;
-    background: white;
-
-    border-radius: 10px;
-    overflow: hidden;
-
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	width: 100%;
+	max-width: 600px;
+	margin: 20px auto;
+	border-collapse: collapse;
+	background: white;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .history-row {
-    width: 100%;
-    max-width: 700px;
-    margin: 20px auto;
-
-    border-collapse: collapse;
-    background: white;
-
-    border-radius: 10px;
-    overflow: hidden;
-
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	width: 100%;
+	max-width: 700px;
+	margin: 20px auto;
+	border-collapse: collapse;
+	background: white;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.table-view th,
-.table-view td {
-    padding: 5px 26px;
-    border-bottom: 1px solid #eee;
+.table-view th, .table-view td {
+	padding: 5px 26px;
+	border-bottom: 1px solid #eee;
 }
 
 .table-view th {
-    width: 40%;
-    text-align: left;
-    background: #f7f7f7;
-    color: black;
-    font-size: 18px;
+	width: 40%;
+	text-align: left;
+	background: #f7f7f7;
+	color: black;
+	font-size: 18px;
 }
 
 .table-view td {
-    font-size: 16px;
-    color: black;
+	font-size: 16px;
+	color: black;
 }
+
 form img {
 	max-width: 100%;
+}
+
+select {
+	width: 100%;
+	max-width: 300px;
+	padding: 10px 12px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background: #fff;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+select:focus {
+	outline: none;
+	border-color: #28a745;
+	box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+}
+
+/* ===== スマホ ===== */
+@media ( max-width : 768px) {
+	select {
+		width: 30%;
+		font-size: 16px; /* iPhoneズーム防止 */
+	}
 }

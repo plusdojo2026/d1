@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
 <header class="header">
-	<img alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	<a href="${pageContext.request.contextPath}/HomeServlet"> <img
+		alt="SaleS" src="${pageContext.request.contextPath}/img/SaleS.png">
+	</a>
 	<div class="hamburger-menu">
 		<input type="checkbox" id="menu-btn-check"> <label
 			for="menu-btn-check" class="menu-btn"><span></span></label>
@@ -42,7 +44,7 @@
 		<p>
 			<c:out value="${result.message}" />
 		</p>
-		<a href="${result.backTo}">ホーム画面へ戻る</a>
+		<a href="${result.backTo}">前の画面へ戻る</a>
 	</div>
 
 </body>

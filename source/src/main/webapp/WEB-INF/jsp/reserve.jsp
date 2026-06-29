@@ -363,9 +363,9 @@ editForm.onsubmit = function(event) {
         return;
     }
 
-    if (sdate === "") {
+    if (fdate === "") {
         editError.textContent = "※予約開始日時を入力してください！";
-        document.getElementById("sedit").style.backgroundColor = "#ffe6e6";
+        document.getElementById("fedit").style.backgroundColor = "#ffe6e6";
         event.preventDefault();
         return;
     }

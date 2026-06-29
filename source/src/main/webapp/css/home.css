@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 header img {
 	width: 120px;
 	height: auto;
@@ -15,59 +16,51 @@ header img {
 	position: relative;
 }
 /* ===== レスポンシブ対応 ===== */
-@media (max-width: 768px) {
-    body {
-        margin: 20px 5px;
-    }
-
-    #calendar {
-        margin: 0 auto 30px;
-        padding: 15px;
-    }
-
-    #reserve_form {
-        padding: 20px;
-    }
-
-    .form-row-group {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .form-group {
-        min-width: 100%;
-    }
-
-    .form-buttons {
-        flex-direction: row;
-    }
-
-    #editModal {
-        width: 95%;
-        padding: 20px;
-    }
-
-
-@media (max-width: 480px) {
-
-body {
-        background: #fafafa;
-        font-size: 16px;  
-        padding: 10px;    
-    }
-
-.notice {
-        border: 2px solid #333;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        }
-header img {
-	width: 120px;
-	height: auto;
-	display: block;
-	margin: 0 auto;
+@media ( max-width : 768px) {
+	body {
+		margin: 20px 5px;
+	}
+	#calendar {
+		margin: 0 auto 30px;
+		padding: 15px;
+	}
+	#reserve_form {
+		padding: 20px;
+	}
+	.form-row-group {
+		flex-direction: column;
+		gap: 15px;
+	}
+	.form-group {
+		min-width: 100%;
+	}
+	.form-buttons {
+		flex-direction: row;
+	}
+	#editModal {
+		width: 95%;
+		padding: 20px;
+	}
+	@media ( max-width : 480px) {
+		body {
+			background: #fafafa;
+			font-size: 16px;
+			padding: 10px;
+		}
+		.notice {
+			border: 2px solid #333;
+			border-radius: 8px;
+			padding: 10px;
+			background-color: #ffffff;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		header img {
+			width: 120px;
+			height: auto;
+			display: block;
+			margin: 0 auto;
+		}
+	}
 }

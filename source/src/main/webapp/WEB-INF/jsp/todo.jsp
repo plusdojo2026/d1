@@ -55,7 +55,7 @@
 
 
 		<div class="form-group">
-			<label>外装写真</label> <input type="file" name="outsidephoto"
+			<label>内装写真</label> <input type="file" name="outsidephoto"
 				accept="image/*">
 		</div>
 
@@ -95,8 +95,8 @@
 		</div>
 
 		<div class="form-group">
-			<label>ガソリン残量</label> <input type="number" min="0" max="100"
-				name="gasolineamount" placeholder="メモリ数を記入">
+			<label>ガソリン残量</label> <input type="number" min="1" max="12"
+				name="gasolineamount" placeholder="メモリ数(1~12)を記入">
 		</div>
 		<p id="errorMsg"></p>
 		<div class="button-area">
@@ -126,7 +126,7 @@
 		error.innerHTML = "";
 
 		if (!photo) {
-			error.innerHTML = "外装写真を選択してください";
+			error.innerHTML = "内装写真を選択してください";
 			return false;
 		}
 
